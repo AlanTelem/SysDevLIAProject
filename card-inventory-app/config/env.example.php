@@ -26,7 +26,7 @@ declare(strict_types=1);
 return function (array $settings): array {
     // Database credentials
     $settings['db']['username'] = 'root';
-    $settings['db']['database'] = 'tcg_inventory.sql';
+    $settings['db']['database'] = '';
     $settings['db']['password'] = '';
 
     //TODO: Additional settings/configs can be declared here.
