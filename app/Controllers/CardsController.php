@@ -113,4 +113,24 @@ class CardsController extends BaseController
 
         return $this->redirect($request, $response, 'card.index');
     }
+
+    public function deleteCard(Request $request, Response $response, array $args): Response
+    {
+        $id = (int)$args['id'];
+
+        if ($id <= 0) {
+            FlashMessage::error('Invalid card ID');
+            return $this->redirect($request, $response, 'card.index');
+        }
+
+        $rowsAffected = $this->cardsModel->deleteCard($id);
+
+        if ($rowsAffected > 0) {
+            FlashMessage::success('Card has been deleted successfully');
+        } else {
+            FlashMessage::error('Card not found or could not be deleted');
+        }
+
+        return $this->redirect($request, $response, 'card.index');
+    }
 }

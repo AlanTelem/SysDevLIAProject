@@ -213,4 +213,11 @@ WHERE cc.id = :condition_id;";
 
         return $this->lastInsertId();
     }
+
+    public function deleteCard(int $id): int
+    {
+        $rowsAffected = $this->execute("DELETE FROM cards WHERE id = :id", ['id' => $id]);
+
+        return $rowsAffected;
+    }
 }

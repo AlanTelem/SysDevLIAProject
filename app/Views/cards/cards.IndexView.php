@@ -2,6 +2,7 @@
 
 use App\Helpers\ViewHelper;
 
+
 $title = $data['title'] ?? "Cards";
 $blueprints = $data["blueprints"] ?? [];
 $cards = $data["cards"] ?? [];
@@ -9,7 +10,10 @@ $cards = $data["cards"] ?? [];
 ViewHelper::loadHeader($title);
 ?>
 
+<?php ViewHelper::loadJsScripts(); ?>
+
 <!-- BLUEPRINT SECTION -->
+<?= App\Helpers\FlashMessage::render() ?>
 <div class="d-flex justify-content-between align-items-center mb-3 m-3">
     <h2>Card Blueprints</h2>
 
@@ -39,7 +43,7 @@ ViewHelper::loadHeader($title);
                             <i class="bi bi-pencil-square"></i> Edit
                         </a>
                         <a href="#" class="btn btn-sm btn-danger"
-                           onclick="return confirm('Are you sure you want to delete this blueprint?')">
+                            onclick="return confirm('Are you sure you want to delete this blueprint?')">
                             <i class="bi bi-trash"></i> Delete
                         </a>
                     </td>
@@ -81,7 +85,7 @@ ViewHelper::loadHeader($title);
                             <i class="bi bi-pencil-square"></i> Edit
                         </a>
                         <a href="#" class="btn btn-sm btn-danger"
-                           onclick="return confirm('Are you sure you want to delete this card?')">
+                            onclick="confirmDeleteCard(<?= hs($card['card_id']) ?>, '<?= hs($card['card_name']) ?>')">
                             <i class="bi bi-trash"></i> Delete
                         </a>
                     </td>

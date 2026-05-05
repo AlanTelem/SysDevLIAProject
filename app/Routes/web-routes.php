@@ -44,15 +44,18 @@ return static function (Slim\App $app): void {
     $app->get('/cards', [CardsController::class, 'index'])
         ->setName('card.index');
 
-     $app->get('/cards/blueprint/create', [CardsController::class, 'addBlueprint'])
+    $app->get('/cards/blueprint/create', [CardsController::class, 'addBlueprint'])
         ->setName('blueprint.create');
 
-     $app->post('/cards/blueprint/store', [CardsController::class, 'storeBlueprint'])
+    $app->post('/cards/blueprint/store', [CardsController::class, 'storeBlueprint'])
         ->setName('blueprint.store');
 
-     $app->get('/cards/create', [CardsController::class, 'addCards'])
+    $app->get('/cards/create', [CardsController::class, 'addCards'])
         ->setName('card.create');
 
-     $app->post('/cards/store', [CardsController::class, 'storeCards'])
+    $app->post('/cards/store', [CardsController::class, 'storeCards'])
         ->setName('card.store');
+
+    $app->get('/cards/{id}/delete', [CardsController::class, 'deleteCard'])
+        ->setName('card.delete');
 };
