@@ -13,26 +13,21 @@ class CardsModel extends BaseModel
 
     public function getAllCards(): array
     {
-        $sql =
-            "SELECT
-    c.id AS card_id,
-    cb.name AS card_name,
-    s.name AS set_name,
-    tcg.name AS tcg_name,
-    cc.physical_condition,
-    CASE
-        WHEN c.foil = 1 THEN 'Yes'
-        ELSE 'No'
-    END AS foil
-    FROM cards c
-    JOIN card_blueprints cb
-        ON c.blueprint_id = cb.id
-    JOIN sets s
-        ON cb.set_id = s.id
-    JOIN trading_card_games tcg
-        ON s.tcg_id = tcg.id
-    JOIN card_condition cc
-        ON c.condition_id = cc.id;";
+        $sql = "
+        SELECT
+            c.id AS card_id,
+            cb.name AS card_name,
+            s.name AS set_name,
+            tcg.name AS tcg_name,
+            cc.physical_condition AS condition_name,
+            CASE WHEN c.foil = 1 THEN 'Yes' ELSE 'No' END AS foil
+        FROM cards c
+        JOIN card_blueprints cb ON c.blueprint_id = cb.id
+        JOIN sets s ON cb.set_id = s.id
+        JOIN trading_card_games tcg ON s.tcg_id = tcg.id
+        JOIN card_condition cc ON c.condition_id = cc.id
+        ORDER BY c.id ASC
+    ";
 
         return $this->selectAll($sql);
     }
@@ -146,5 +141,76 @@ WHERE cc.id = :condition_id;";
 
         $params = ['foil' => $foil ? 1 : 0];
         return $this->selectAll($sql, $params);
+    }
+
+    public function getAllSets()
+    {
+        $sql = "
+        SELECT
+            s.id AS set_id,
+            s.name AS set_name,
+            tcg.name AS tcg_name
+        FROM sets s
+        JOIN trading_card_games tcg ON s.tcg_id = tcg.id
+        ORDER BY s.release_date ASC
+    ";
+
+        return $this->selectAll($sql);
+    }
+
+    public function getAllCardBlueprints()
+    {
+        $sql = "
+        SELECT
+            cb.id AS blueprint_id,
+            cb.name AS blueprint_name,
+            s.id AS set_id,
+            s.name AS set_name
+        FROM card_blueprints cb
+        JOIN sets s ON cb.set_id = s.id
+    ";
+
+        return $this->selectAll($sql);
+    }
+
+    public function getAllCardConditions()
+    {
+        $sql = "
+        SELECT
+            id AS condition_id,
+            physical_condition AS condition_name
+        FROM card_condition
+    ";
+
+        return $this->selectAll($sql);
+    }
+
+    public function addAndGetBlueprint(array $data): string
+    {
+        $this->execute(
+            "INSERT INTO card_blueprints (set_id, name)
+         VALUES (:set_id, :name)",
+            [
+                'set_id' => $data['set_id'],
+                'name' => $data['name']
+            ]
+        );
+
+        return $this->lastInsertId();
+    }
+
+    public function addAndGetCard(array $data): string
+    {
+        $this->execute(
+            "INSERT INTO cards (blueprint_id, condition_id, foil)
+         VALUES (:blueprint_id, :condition_id, :foil)",
+            [
+                'blueprint_id' => $data['blueprint_id'],
+                'condition_id' => $data['condition_id'],
+                'foil' => $data['foil']
+            ]
+        );
+
+        return $this->lastInsertId();
     }
 }

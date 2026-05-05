@@ -10,7 +10,7 @@ use App\Controllers\HomeController;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use App\Controllers\AuthController;
-
+use App\Controllers\CardsController;
 
 return static function (Slim\App $app): void {
 
@@ -40,4 +40,19 @@ return static function (Slim\App $app): void {
     $app->get('/error', function (Request $request, Response $response, $args) {
         throw new \Slim\Exception\HttpBadRequestException($request, "This is a runtime error. Something went wrong");
     });
+
+    $app->get('/cards', [CardsController::class, 'index'])
+        ->setName('card.index');
+
+     $app->get('/cards/blueprint/create', [CardsController::class, 'addBlueprint'])
+        ->setName('blueprint.create');
+
+     $app->post('/cards/blueprint/store', [CardsController::class, 'storeBlueprint'])
+        ->setName('blueprint.store');
+
+     $app->get('/cards/create', [CardsController::class, 'addCards'])
+        ->setName('card.create');
+
+     $app->post('/cards/store', [CardsController::class, 'storeCards'])
+        ->setName('card.store');
 };

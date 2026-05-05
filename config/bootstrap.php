@@ -28,5 +28,4 @@ $container = (new ContainerBuilder())
 
 // Create and return an App instance.
 $app = $container->get(App::class);
-$app->setBasePath('/SysDevLIAProject/card-inventory-app');
 return $app;
