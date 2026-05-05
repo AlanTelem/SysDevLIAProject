@@ -111,6 +111,6 @@ class AuthController extends BaseController
     {
         SessionManager::destroy();
         FlashMessage::success('You have successfully logged out');
-        return $this->redirect($request, $response, 'auth/login.php');
+        return $this->redirect($request, $response, 'auth.login');
     }
 }

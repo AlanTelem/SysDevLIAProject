@@ -4,7 +4,7 @@ use App\Helpers\ViewHelper;
 
 ViewHelper::loadHeader($title ?? 'Log In');
 ?>
-
+<?= App\Helpers\FlashMessage::render() ?>
 <div class="row justify-content-center">
     <div class="col-md-5">
         <div class="card">
@@ -14,13 +14,13 @@ ViewHelper::loadHeader($title ?? 'Log In');
             <div class="card-body">
                 <form method="POST" action="<?= APP_BASE_URL ?>/login">
                     <div class="mb-3">
-                        <label for="identifier" class="form-label">Email or Username</label>
+                        <label for="identifier" class="form-label">Email</label>
                         <input
                             type="text"
                             class="form-control"
                             id="identifier"
                             name="identifier"
-                            placeholder="Enter your email or username"
+                            placeholder="Enter your email"
                             required>
                     </div>
 
