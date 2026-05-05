@@ -9,6 +9,7 @@ declare(strict_types=1);
 use App\Controllers\HomeController;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use App\Controllers\AuthController;
 
 
 return static function (Slim\App $app): void {
@@ -20,6 +21,11 @@ return static function (Slim\App $app): void {
 
     $app->get('/home', [HomeController::class, 'index'])
         ->setName('home.index');
+
+    $app->get('/register', [AuthController::class, 'register'])
+        ->setName('auth.register');
+
+    $app->post('/register', [AuthController::class, 'store']);
 
     // A route to display PHP configuration information.
     $app->get('/phpinfo', function (Request $request, Response $response, $args) {

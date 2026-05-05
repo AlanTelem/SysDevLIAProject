@@ -16,4 +16,16 @@ class AuthController extends BaseController
         parent::__construct($container);
     }
 
+    public function register(Request $request, Response $response, array $args): Response
+    {
+        $data['data'] = [
+            'title' => 'Register | Create a new account',
+        ];
+
+        if (isset($_SESSION["account_info"])) {
+            $data['data']['account_info'] = $_SESSION["account_info"];
+            unset($_SESSION["account_info"]);
+        }
+        return $this->render($response, "auth/register.php", $data);
+    }
 }

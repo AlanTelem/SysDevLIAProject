@@ -2,7 +2,7 @@
 
 use App\Helpers\ViewHelper;
 
-ViewHelper::loadHeader($title);
+ViewHelper::loadHeader($title ?? 'Register new account');
 ?>
 
 <div class="row justify-content-center">
