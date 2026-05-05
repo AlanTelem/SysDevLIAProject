@@ -85,4 +85,32 @@ class AuthController extends BaseController
         ];
         return $this->render($response, 'auth/login.php', $data);
     }
+
+    public function authenticate(Request $request, Response $response, array $args): Response
+    {
+        $form_data = $request->getParsedBody();
+        if (isset($form_data['identifier']) && isset($form_data['password'])) {
+            $account = $this->accounts_model->verifyCredentials($form_data['identifier'], $form_data['password']);
+            if ($account === null) {
+                FlashMessage::error('Invalid Credentials.');
+                return $this->redirect($request, $response, 'auth/login.php');
+            }
+            SessionManager::set('account', [
+                'account_id' => $account['id'],
+                'email' => $account['email'],
+                'is_authenticated' => true
+            ]);
+            FlashMessage::success("You are logged in with  " . SessionManager::get('account')['email']);
+            return $this->redirect($request, $response, 'home.index');
+        }
+        FlashMessage::error('Please input credentials');
+        return $this->redirect($request, $response,'auth/login.php');
+    }
+
+    public function logout(Request $request, Response $response, array $args): Response
+    {
+        SessionManager::destroy();
+        FlashMessage::success('You have successfully logged out');
+        return $this->redirect($request, $response, 'auth/login.php');
+    }
 }

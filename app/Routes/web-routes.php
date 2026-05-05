@@ -27,6 +27,13 @@ return static function (Slim\App $app): void {
 
     $app->post('/register', [AuthController::class, 'store']);
 
+    $app->get('/login', [AuthController::class, 'login'])
+        ->setName('auth.login');
+
+    $app->post('/login', [AuthController::class, 'authenticate']);
+
+    $app->get('/logout', [AuthController::class, 'logout'])
+        ->setName('auth.logout');
     // A route to display PHP configuration information.
     $app->get('/phpinfo', function (Request $request, Response $response, $args) {
         ob_start();
