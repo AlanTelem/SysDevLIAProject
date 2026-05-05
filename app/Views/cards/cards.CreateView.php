@@ -9,6 +9,7 @@ $conditions = $data['conditions'] ?? [];
 ViewHelper::loadHeader($title);
 ?>
 
+<h1 class="text-center my-4"><?= hs($title) ?></h1>
 <form method="POST" action="<?= APP_BASE_URL ?>/cards/store" class="row g-3 m-3">
     <!-- TODO: Add a select dropdown for category (required) -->
     <!-- Use ViewHelper::renderSelectOptions($categories, '', 'id', 'name') -->

@@ -9,6 +9,8 @@ $sets = $data['sets'] ?? [];
 ViewHelper::loadHeader($title);
 ?>
 
+<h1 class="text-center my-4"><?= hs($title) ?></h1>
+
 <form method="POST" action="<?= APP_BASE_URL ?>/cards/<?= hs($blueprint['blueprint_id']) ?>/update-blueprint" class="row g-3 m-3">
     <div class="col mb-3">
         <label for="name" class="form-label">Card Blueprint Name</label>
