@@ -214,6 +214,70 @@ WHERE cc.id = :condition_id;";
         return $this->lastInsertId();
     }
 
+    public function findByBlueprintId(int $id): array|false
+    {
+        return $this->selectOne(
+            "SELECT
+            cb.id AS blueprint_id,
+            cb.name AS blueprint_name,
+            cb.set_id
+         FROM card_blueprints cb
+         WHERE cb.id = :id
+         LIMIT 1",
+            [':id' => $id]
+        );
+    }
+
+
+    public function updateCardBlueprint(int $id, array $data): int
+    {
+        return $this->execute(
+            "UPDATE card_blueprints
+         SET set_id = :set_id,
+             name = :name
+         WHERE id = :id",
+            [
+                ':id' => $id,
+                ':set_id' => $data['set_id'],
+                ':name' => $data['name'],
+            ]
+        );
+    }
+
+    public function findByCardId(int $id): array|false
+    {
+        return $this->selectOne(
+            "SELECT
+            c.id AS card_id,
+            c.blueprint_id,
+            c.condition_id,
+            CASE WHEN c.foil = 1 THEN 'Yes' ELSE 'No' END AS foil
+         FROM cards c
+         WHERE c.id = :id
+         LIMIT 1",
+            [':id' => $id]
+        );
+    }
+
+
+    public function updateCard(int $id, array $data): int
+    {
+        return $this->execute(
+            "UPDATE cards
+         SET blueprint_id = :blueprint_id,
+             condition_id = :condition_id,
+             foil = :foil
+         WHERE id = :id",
+            [
+                ':id' => $id,
+                ':blueprint_id' => $data['blueprint_id'],
+                ':condition_id' => $data['condition_id'],
+                ':foil' => $data['foil']
+            ]
+        );
+    }
+
+
     public function deleteCard(int $id): int
     {
         $rowsAffected = $this->execute("DELETE FROM cards WHERE id = :id", ['id' => $id]);

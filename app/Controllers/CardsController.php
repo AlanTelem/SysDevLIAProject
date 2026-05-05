@@ -163,4 +163,108 @@ class CardsController extends BaseController
 
         return $this->redirect($request, $response, 'card.index');
     }
+
+    public function editCardBlueprint(Request $request, Response $response, array $args): Response
+    {
+        $blueprint_id = $args['id'];
+
+        $blueprint = $this->cardsModel->findByBlueprintId($blueprint_id);
+
+        if (!$blueprint) {
+            FlashMessage::error('Card Blueprint not found!');
+            $this->redirect($request, $response, 'card.index');
+        }
+
+        $sets = $this->cardsModel->getAllSets();
+
+        $data = [
+            'title' => 'Edit Card Blueprint',
+            'blueprint' => $blueprint,
+            'sets' => $sets
+        ];
+
+        return $this->render($response, 'cards/blueprint.EditView.php', $data);
+    }
+
+    public function updateCardBlueprint(Request $request, Response $response, array $args): Response
+    {
+        $blueprint_id = $args['id'];
+
+        $data = $request->getParsedBody();
+
+        $set_id = $data['set_id'];
+        $name = $data['name'];
+
+        if (empty($set_id)) {
+            FlashMessage::error('Please select a set');
+            return $this->redirect($request, $response, 'blueprint.edit');
+        }
+
+        if (empty($name)) {
+            FlashMessage::error('Please put a valid blueprint name');
+            return $this->redirect($request, $response, 'blueprint.edit');
+        }
+
+        $this->cardsModel->updateCardBlueprint($blueprint_id, $data);
+
+        FlashMessage::success('Card Blueprint has been updated successfully');
+
+        return $this->redirect($request, $response, 'card.index');
+    }
+
+    public function editCard(Request $request, Response $response, array $args): Response
+    {
+        $card_id = $args['id'];
+
+        $card = $this->cardsModel->findByCardId($card_id);
+
+        if (!$card) {
+            FlashMessage::error('Card not found!');
+            $this->redirect($request, $response, 'card.index');
+        }
+
+        $blueprints = $this->cardsModel->getAllCardBlueprints();
+        $conditions = $this->cardsModel->getAllCardConditions();
+
+        $data = [
+            'title' => 'Edit Cards',
+            'card' => $card,
+            'blueprints' => $blueprints,
+            'conditions' => $conditions
+        ];
+
+        return $this->render($response, 'cards/cards.EditView.php', $data);
+    }
+
+    public function updateCard(Request $request, Response $response, array $args): Response
+    {
+        $card_id = $args['id'];
+
+        $data = $request->getParsedBody();
+
+        $blueprint_id = $data['blueprint_id'];
+        $condition_id = $data['condition_id'];
+        $foil = $data['foil'];
+
+        if (empty($blueprint_id)) {
+            FlashMessage::error('Please select a blueprint');
+            return $this->redirect($request, $response, 'card.edit');
+        }
+
+        if (empty($condition_id)) {
+            FlashMessage::error('Please select a card condition');
+            return $this->redirect($request, $response, 'card.edit');
+        }
+
+        if ($foil === '') {
+            FlashMessage::error('Please put a valid foil');
+            return $this->redirect($request, $response, 'card.edit');
+        }
+
+        $this->cardsModel->updateCard($card_id, $data);
+
+        FlashMessage::success('Card has been updated successfully');
+
+        return $this->redirect($request, $response, 'card.index');
+    }
 }

@@ -39,11 +39,11 @@ ViewHelper::loadHeader($title);
                     <td><?= hs($bp['set_name']) ?></td>
                     <td><?= hs($bp['blueprint_name']) ?></td>
                     <td class="text-center">
-                        <a href="#" class="btn btn-sm btn-warning me-2">
+                        <a href="<?= APP_BASE_URL ?>/cards/<?= $bp['blueprint_id'] ?>/edit-blueprint" class="btn btn-sm btn-warning me-2">
                             <i class="bi bi-pencil-square"></i> Edit
                         </a>
-                        <a href="#" class="btn btn-sm btn-danger"
-                            onclick="confirmDeleteCardBlueprint(<?= hs($bp['blueprint_id']) ?>, '<?= hs($bp['blueprint_name']) ?>')">
+                        <a href="<?= APP_BASE_URL ?>/cards/<?= $bp['blueprint_id'] ?>/delete-blueprint" class="btn btn-sm btn-danger"
+                            onclick="event.preventDefault(); confirmDeleteCardBlueprint(<?= hs($bp['blueprint_id']) ?>, '<?= hs($bp['blueprint_name']) ?>')">
                             <i class="bi bi-trash"></i> Delete
                         </a>
                     </td>
@@ -81,11 +81,11 @@ ViewHelper::loadHeader($title);
                     <td><?= hs($card['condition_name']) ?></td>
                     <td><?= hs($card['foil']) ?></td>
                     <td class="text-center">
-                        <a href="#" class="btn btn-sm btn-warning me-2">
+                        <a href="<?= APP_BASE_URL ?>/cards/<?= $card['card_id'] ?>/edit" class="btn btn-sm btn-warning me-2">
                             <i class="bi bi-pencil-square"></i> Edit
                         </a>
-                        <a href="#" class="btn btn-sm btn-danger"
-                            onclick="confirmDeleteCard(<?= hs($card['card_id']) ?>, '<?= hs($card['card_name']) ?>')">
+                        <a href="<?= APP_BASE_URL ?>/cards/<?= $card['card_id'] ?>/delete" class="btn btn-sm btn-danger"
+                            onclick="event.preventDefault(); confirmDeleteCard(<?= hs($card['card_id']) ?>, '<?= hs($card['card_name']) ?>')">
                             <i class="bi bi-trash"></i> Delete
                         </a>
                     </td>
