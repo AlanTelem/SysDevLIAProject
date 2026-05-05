@@ -66,14 +66,10 @@ class FlashMessage
      */
     public static function get(): array
     {
-        // TODO: Retrieve all messages from $_SESSION[self::FLASH_KEY]
-        // Hint: Use the null coalescing operator (??) to default to an empty array
         $messages = $_SESSION[self::FLASH_KEY] ?? [];
 
-        // TODO: Remove the flash messages from the session using unset()
         unset($_SESSION[self::FLASH_KEY]);
 
-        // TODO: Return the retrieved messages
         return $messages;
     }
 
@@ -82,8 +78,6 @@ class FlashMessage
      */
     public static function has(): bool
     {
-        // TODO: Check if $_SESSION[self::FLASH_KEY] exists and is not empty
-        // Hint: Use the empty() function
         return !empty($_SESSION[self::FLASH_KEY]);
     }
 
@@ -92,7 +86,6 @@ class FlashMessage
      */
     public static function clear(): void
     {
-        // TODO: Remove the flash messages from the session using unset()
         unset($_SESSION[self::FLASH_KEY]);
     }
 

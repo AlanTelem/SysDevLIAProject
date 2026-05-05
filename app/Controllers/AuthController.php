@@ -93,7 +93,7 @@ class AuthController extends BaseController
             $account = $this->accounts_model->verifyCredentials($form_data['identifier'], $form_data['password']);
             if ($account === null) {
                 FlashMessage::error('Invalid Credentials.');
-                return $this->redirect($request, $response, 'auth/login.php');
+                return $this->redirect($request, $response, 'auth.login');
             }
             SessionManager::set('account', [
                 'account_id' => $account['id'],
@@ -104,7 +104,7 @@ class AuthController extends BaseController
             return $this->redirect($request, $response, 'home.index');
         }
         FlashMessage::error('Please input credentials');
-        return $this->redirect($request, $response,'auth/login.php');
+        return $this->redirect($request, $response, 'auth.login');
     }
 
     public function logout(Request $request, Response $response, array $args): Response
