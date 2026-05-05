@@ -220,4 +220,10 @@ WHERE cc.id = :condition_id;";
 
         return $rowsAffected;
     }
+    public function deleteCardBlueprint(int $id): int
+    {
+        $rowsAffected = $this->execute("DELETE FROM card_blueprints WHERE id = :id", ['id' => $id]);
+
+        return $rowsAffected;
+    }
 }

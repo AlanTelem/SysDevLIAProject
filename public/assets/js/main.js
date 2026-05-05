@@ -19,3 +19,25 @@ function confirmDeleteCard(cardId, cardName) {
         }
     });
 }
+
+function confirmDeleteCardBlueprint(bpId, bpName) {
+    console.log("BlueprintId: " + bpId);
+    console.log("Blueprint Name: " + bpName);
+
+    // Show the SweetAlert2 confirmation dialog.
+    Swal.fire({
+        title: "Are you sure?",
+        text: "Please confirm deleting blueprint: " + bpName,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Navigate to the GET delete route after confirmation
+            window.location.href =
+                APP_BASE_URL + "/cards/" + bpId + "/delete-blueprint";
+        }
+    });
+}

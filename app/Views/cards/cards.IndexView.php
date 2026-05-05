@@ -43,7 +43,7 @@ ViewHelper::loadHeader($title);
                             <i class="bi bi-pencil-square"></i> Edit
                         </a>
                         <a href="#" class="btn btn-sm btn-danger"
-                            onclick="return confirm('Are you sure you want to delete this blueprint?')">
+                            onclick="confirmDeleteCardBlueprint(<?= hs($bp['blueprint_id']) ?>, '<?= hs($bp['blueprint_name']) ?>')">
                             <i class="bi bi-trash"></i> Delete
                         </a>
                     </td>

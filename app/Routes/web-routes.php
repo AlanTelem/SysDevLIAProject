@@ -26,7 +26,7 @@ return static function (Slim\App $app): void {
         ->setName('auth.register');
 
     $app->post('/register', [AuthController::class, 'store']);
-    
+
     // A route to display PHP configuration information.
     $app->get('/phpinfo', function (Request $request, Response $response, $args) {
         ob_start();
@@ -58,4 +58,7 @@ return static function (Slim\App $app): void {
 
     $app->get('/cards/{id}/delete', [CardsController::class, 'deleteCard'])
         ->setName('card.delete');
+
+    $app->get('/cards/{id}/delete-blueprint', [CardsController::class, 'deleteCardBlueprint'])
+        ->setName('blueprint.delete');
 };

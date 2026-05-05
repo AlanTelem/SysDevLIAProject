@@ -133,4 +133,34 @@ class CardsController extends BaseController
 
         return $this->redirect($request, $response, 'card.index');
     }
+
+    public function deleteCardBlueprint(Request $request, Response $response, array $args): Response
+    {
+        $id = (int)$args['id'];
+
+        if ($id <= 0) {
+            FlashMessage::error('Invalid blueprint ID');
+            return $this->redirect($request, $response, 'card.index');
+        }
+
+        try {
+            $rowsAffected = $this->cardsModel->deleteCardBlueprint($id);
+        } catch (\PDOException $e) {
+            // Check if the error is due to foreign key constraint violation
+            if ($e->getCode() === '23000') {
+                FlashMessage::error('Cannot delete this blueprint because there are cards associated with it. Please delete the associated cards first.');
+            } else {
+                FlashMessage::error('An error occurred while trying to delete the blueprint. Please try again later.');
+            }
+            return $this->redirect($request, $response, 'card.index');
+        }
+
+        if ($rowsAffected > 0) {
+            FlashMessage::success('Card Blueprint has been deleted successfully');
+        } else {
+            FlashMessage::error('Card Blueprint not found or could not be deleted');
+        }
+
+        return $this->redirect($request, $response, 'card.index');
+    }
 }
