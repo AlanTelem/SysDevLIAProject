@@ -101,7 +101,7 @@ class AuthController extends BaseController
                 'is_authenticated' => true
             ]);
             FlashMessage::success("You are logged in with  " . SessionManager::get('account')['email']);
-            return $this->redirect($request, $response, 'home.index');
+            return $this->redirect($request, $response, 'card.index');
         }
         FlashMessage::error('Please input credentials');
         return $this->redirect($request, $response, 'auth.login');
