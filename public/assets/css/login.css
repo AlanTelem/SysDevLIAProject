@@ -1,4 +1,4 @@
-body {
+.login-page {
     margin: 0;
     font-family: Arial, sans-serif;
     background: url("/SysDevLIAProject/public/assets/images/cards-bg.png")
@@ -13,7 +13,11 @@ body {
     height: 100vh;
     padding: 40px 25px;
 }
-
+.logo {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+}
 .left-panel h2 {
     font-weight: bold;
 }
@@ -40,6 +44,7 @@ body {
     max-width: 420px;
     background: rgba(0, 0, 0, 0.6);
     border-radius: 10px;
+    max-width: 600px;
 }
 
 .login-title {
@@ -82,4 +87,8 @@ body {
     margin-top: 30px;
     color: #d4c15a;
     font-size: 14px;
+}
+.spacer {
+    height: 20px;
+    width: 100%;
 }
