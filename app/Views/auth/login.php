@@ -5,22 +5,37 @@ use App\Helpers\ViewHelper;
 ViewHelper::loadHeader($title ?? 'Log In');
 ?>
 <?= App\Helpers\FlashMessage::render() ?>
-<div class="row justify-content-center">
-    <div class="col-md-5">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="text-center">Login</h3>
-            </div>
-            <div class="card-body">
+
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- LEFT SIDE -->
+        <div class="col-md-3 left-panel d-none d-md-block">
+            <h2>OTHER WORLD GAMES</h2>
+            <p>CARDS & GAMES</p>
+            <p><strong>Card inventory made simple.</strong></p>
+
+            <div class="left-box"></div>
+            <div class="left-box"></div>
+            <div class="left-box"></div>
+        </div>
+
+        <!-- RIGHT SIDE -->
+        <div class="col-md-9 login-wrapper">
+            <div class="login-box">
+
+                <h2 class="login-title">Welcome back!</h2>
+
                 <form method="POST" action="<?= APP_BASE_URL ?>/login">
+
                     <div class="mb-3">
-                        <label for="identifier" class="form-label">Email</label>
+                        <label for="identifier" class="form-label">Username</label>
                         <input
                             type="text"
                             class="form-control"
                             id="identifier"
                             name="identifier"
-                            placeholder="Enter your email"
+                            placeholder="@username"
                             required>
                     </div>
 
@@ -31,20 +46,22 @@ ViewHelper::loadHeader($title ?? 'Log In');
                             class="form-control"
                             id="password"
                             name="password"
-                            placeholder="Enter your password"
+                            placeholder="password"
                             required>
                     </div>
 
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary">Login</button>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-login">LOGIN</button>
                     </div>
+
                 </form>
 
-                <div class="mt-3 text-center">
-                    <p>Don't have an account? <a href="<?= APP_BASE_URL ?>/register">Register here</a></p>
-                </div>
+                <a href="#" class="admin-link">Admin Login</a>
+
             </div>
         </div>
+
     </div>
 </div>
 
