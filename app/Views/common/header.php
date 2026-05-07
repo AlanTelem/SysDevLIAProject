@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <!-- TODO: include your CSS files here -->
     <link rel="stylesheet" href="<?= APP_BASE_URL ?>/public/assets/css/login.css">
+    <link rel="stylesheet" href="<?= APP_BASE_URL ?>/public/assets/css/dashboard.css">
 </head>
 
 <body>
