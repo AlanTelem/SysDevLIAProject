@@ -18,6 +18,9 @@ use Slim\Psr7\Factory\ServerRequestFactory;
 use Slim\Psr7\Factory\StreamFactory;
 use Slim\Psr7\Factory\UriFactory;
 use Slim\Views\PhpRenderer;
+use App\Middleware\AuthMiddleware;
+use App\Middleware\AdminAuthMiddleware;
+
 
 $definitions = [
     AppSettings::class => function () {
@@ -78,5 +81,18 @@ $definitions = [
             (bool) $settings['display_error_details'],
         );
     },
+
+    AuthMiddleware::class => function (ContainerInterface $container) {
+        return new AuthMiddleware(
+            $container->get(ResponseFactoryInterface::class)
+        );
+    },
+
+    AdminAuthMiddleware::class => function (ContainerInterface $container) {
+        return new AdminAuthMiddleware(
+            $container->get(ResponseFactoryInterface::class)
+        );
+    },
+
 ];
 return $definitions;

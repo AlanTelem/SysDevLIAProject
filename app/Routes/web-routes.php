@@ -15,9 +15,10 @@ use App\Controllers\EmployeeController;
 use App\Controllers\DashboardController;
 use App\Middleware\AuthMiddleware;
 use App\Middleware\AdminAuthMiddleware;
+use App\Controllers\ProfileController;
 
 return static function (Slim\App $app): void {
-
+    $container = $app->getContainer();
 
     //* NOTE: Route naming pattern: [controller_name].[method_name]
     $app->get('/', [AuthController::class, 'login'])
@@ -90,7 +91,31 @@ return static function (Slim\App $app): void {
 
     $app->get('/dashboard', [DashboardController::class, 'index'])
         ->setName('dashboard.index')
-        ->add(new AuthMiddleware());
+        ->add($container->get(AuthMiddleware::class));
+
+    $app->get('/cards/{id}', [CardsController::class, 'showCard'])
+        ->setName('card.show')
+        ->add($container->get(AdminAuthMiddleware::class));
+
+
+    $app->get('/profile', [ProfileController::class, 'employeeProfile'])
+        ->setName('profile.employee')
+        ->add($container->get(AuthMiddleware::class));
+
+    $app->post('/profile/update', [ProfileController::class, 'updateEmployee'])
+        ->setName('profile.employee.update')
+        ->add($container->get(AuthMiddleware::class));
+
+    $app->get('/admin/profile', [ProfileController::class, 'adminProfile'])
+        ->setName('profile.admin')
+        ->add($container->get(AdminAuthMiddleware::class))
+        ->add($container->get(AuthMiddleware::class));
+
+    $app->post('/admin/profile/update', [ProfileController::class, 'updateAdmin'])
+        ->setName('profile.admin.update')
+        ->add($container->get(AdminAuthMiddleware::class))
+        ->add($container->get(AuthMiddleware::class));
+
 
 
     // List all employees
@@ -111,6 +136,6 @@ return static function (Slim\App $app): void {
         $group->post('/employees/{id}/delete', [EmployeeController::class, 'delete'])
             ->setName('admin.employees.delete');
     })
-        ->add(new AdminAuthMiddleware())
-        ->add(new AuthMiddleware());
+        ->add($container->get(AdminAuthMiddleware::class))
+        ->add($container->get(AuthMiddleware::class));
 };

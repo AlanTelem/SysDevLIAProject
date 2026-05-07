@@ -305,4 +305,19 @@ class CardsController extends BaseController
             ->withHeader('Content-Type', 'application/json')
             ->withStatus(200);
     }
+
+    public function showCard(Request $request, Response $response, array $args): Response
+    {
+        $id = (int)$args['id'];
+
+        $card = $this->cardsModel->getCardById($id);
+
+        if (!$card) {
+            return $this->redirect($request, $response, 'card.index');
+        }
+
+        return $this->render($response, 'cards/cards.DetailView.php', [
+            'card' => $card
+        ]);
+    }
 }
