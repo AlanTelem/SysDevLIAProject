@@ -12,6 +12,9 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use App\Controllers\AuthController;
 use App\Controllers\CardsController;
 use App\Controllers\EmployeeController;
+use App\Controllers\DashboardController;
+use App\Middleware\AuthMiddleware;
+use App\Middleware\AdminAuthMiddleware;
 
 return static function (Slim\App $app): void {
 
@@ -85,18 +88,29 @@ return static function (Slim\App $app): void {
     $app->get('/api/cards/search', [CardsController::class, 'searchCards'])
         ->setName('api.cards.search');
 
+    $app->get('/dashboard', [DashboardController::class, 'index'])
+        ->setName('dashboard.index')
+        ->add(new AuthMiddleware());
+
+
     // List all employees
-    $app->get('/employees', [EmployeeController::class, 'index'])->setName('employees.index');
+    $app->group('/admin', function ($group) {
 
-    // Create employee
-    $app->post('/employees/create', [EmployeeController::class, 'create'])->setName('employees.create');
+        $group->get('/employees', [EmployeeController::class, 'index'])
+            ->setName('admin.employees');
 
-    // Get employee for editing
-    $app->get('/employees/{id}/edit', [EmployeeController::class, 'edit'])->setName('employees.edit');
+        $group->post('/employees/create', [EmployeeController::class, 'create'])
+            ->setName('admin.employees.create');
 
-    // Update employee
-    $app->post('/employees/{id}/update', [EmployeeController::class, 'update'])->setName('employees.update');
+        $group->get('/employees/{id}/edit', [EmployeeController::class, 'edit'])
+            ->setName('admin.employees.edit');
 
-    // Delete employee
-    $app->post('/employees/{id}/delete', [EmployeeController::class, 'delete'])->setName('employees.delete');
+        $group->post('/employees/{id}/update', [EmployeeController::class, 'update'])
+            ->setName('admin.employees.update');
+
+        $group->post('/employees/{id}/delete', [EmployeeController::class, 'delete'])
+            ->setName('admin.employees.delete');
+    })
+        ->add(new AdminAuthMiddleware())
+        ->add(new AuthMiddleware());
 };

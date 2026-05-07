@@ -376,4 +376,27 @@ WHERE cc.id = :condition_id;";
 
         return $this->selectAll($sql, $params);
     }
+
+    public function getRecentCards(): array
+    {
+        $sql = "
+        SELECT
+            c.id AS card_id,
+            cb.name AS card_name,
+            c.foil,
+            cc.physical_condition
+        FROM cards c
+        LEFT JOIN card_blueprints cb ON c.blueprint_id = cb.id
+        LEFT JOIN card_condition cc ON c.condition_id = cc.id
+        ORDER BY c.id DESC
+        LIMIT 5
+    ";
+
+        return $this->selectAll($sql);
+    }
+
+    public function calculateInventoryValue(): float
+    {
+        return 0.0; // no value stored in your schema
+    }
 }

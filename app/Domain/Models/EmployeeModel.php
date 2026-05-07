@@ -11,6 +11,20 @@ class EmployeeModel extends BaseModel
         parent::__construct($db_service);
     }
 
+    public function countEmployees(): int
+    {
+        $sql = "
+        SELECT COUNT(*) AS total
+        FROM profiles
+        WHERE privilege = 0
+    ";
+
+        $row = $this->selectOne($sql);
+
+        return (int) $row['total'];
+    }
+
+
     public function getAllEmployees(): array
     {
         $sql = "
