@@ -267,4 +267,42 @@ class CardsController extends BaseController
 
         return $this->redirect($request, $response, 'card.index');
     }
+
+    public function searchCards(Request $request, Response $response, array $args): Response
+    {
+        $query = $request->getQueryParams();
+
+        // Collect all filters
+        $filters = [
+            'name'      => trim($query['name'] ?? ''),
+            'brand'     => trim($query['brand'] ?? ''),
+            'rarity'    => trim($query['rarity'] ?? ''),
+            'condition' => trim($query['condition'] ?? ''),
+            'foil'      => trim($query['foil'] ?? ''),
+            'min_value' => $query['min_value'] ?? null,
+            'max_value' => $query['max_value'] ?? null,
+        ];
+
+        // Limit name length
+        if (strlen($filters['name']) > 100) {
+            $filters['name'] = substr($filters['name'], 0, 100);
+        }
+
+        // Call model
+        $cards = $this->cardsModel->searchCards($filters);
+
+        // Prepare JSON response
+        $data = [
+            'success' => true,
+            'count'   => count($cards),
+            'filters' => $filters,
+            'cards'   => $cards
+        ];
+
+        $response->getBody()->write(json_encode($data));
+
+        return $response
+            ->withHeader('Content-Type', 'application/json')
+            ->withStatus(200);
+    }
 }
