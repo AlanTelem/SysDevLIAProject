@@ -290,4 +290,90 @@ WHERE cc.id = :condition_id;";
 
         return $rowsAffected;
     }
+
+    public function totalCards(): int
+    {
+        return $this->count("SELECT COUNT(*) AS total_cards FROM cards");
+    }
+
+    public function totalBlueprintss(): int
+    {
+        return $this->count("SELECT COUNT(*) AS total_blueprints FROM card_blueprints");
+    }
+
+    public function searchCards(array $filters): array
+    {
+        $sql = "
+        SELECT
+            c.id AS card_id,
+            cb.name AS card_name,
+            s.name AS rarity,
+            tcg.name AS brand,
+            cc.physical_condition AS condition_name,
+            CASE WHEN c.foil = 1 THEN 'Foil' ELSE 'Non-Foil' END AS foil,
+            cf.stock AS value,
+            COUNT(c.id) AS quantity
+        FROM cards c
+        LEFT JOIN card_blueprints cb ON c.blueprint_id = cb.id
+        LEFT JOIN sets s ON cb.set_id = s.id
+        LEFT JOIN trading_card_games tcg ON s.tcg_id = tcg.id
+        LEFT JOIN card_condition cc ON c.condition_id = cc.id
+        LEFT JOIN card_filter cf ON cc.id = cf.condition_id
+        WHERE 1=1
+    ";
+
+        $params = [];
+
+        // NAME filter
+        if (!empty($filters['name'])) {
+            $sql .= " AND cb.name LIKE CONCAT('%', :name, '%')";
+            $params[':name'] = $filters['name'];
+        }
+
+        // BRAND filter (TCG)
+        if (!empty($filters['brand'])) {
+            $sql .= " AND tcg.name = :brand";
+            $params[':brand'] = $filters['brand'];
+        }
+
+        // RARITY filter (set name)
+        if (!empty($filters['rarity'])) {
+            $sql .= " AND s.name = :rarity";
+            $params[':rarity'] = $filters['rarity'];
+        }
+
+        // CONDITION filter
+        if (!empty($filters['condition'])) {
+            $sql .= " AND cc.physical_condition = :condition";
+            $params[':condition'] = $filters['condition'];
+        }
+
+        // FOIL filter
+        if ($filters['foil'] !== '') {
+            $sql .= " AND c.foil = :foil";
+            $params[':foil'] = ($filters['foil'] === 'Foil') ? 1 : 0;
+        }
+
+        // VALUE RANGE filter
+        if (!empty($filters['min_value'])) {
+            $sql .= " AND cf.stock >= :min_value";
+            $params[':min_value'] = $filters['min_value'];
+        }
+
+        if (!empty($filters['max_value'])) {
+            $sql .= " AND cf.stock <= :max_value";
+            $params[':max_value'] = $filters['max_value'];
+        }
+
+        // GROUP + ORDER
+        $sql .= "
+        GROUP BY
+            c.blueprint_id,
+            c.condition_id,
+            c.foil
+        ORDER BY cb.name ASC
+    ";
+
+        return $this->selectAll($sql, $params);
+    }
 }

@@ -11,6 +11,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use App\Controllers\AuthController;
 use App\Controllers\CardsController;
+use App\Controllers\EmployeeController;
 
 return static function (Slim\App $app): void {
 
@@ -80,4 +81,22 @@ return static function (Slim\App $app): void {
 
     $app->get('/cards/{id}/delete-blueprint', [CardsController::class, 'deleteCardBlueprint'])
         ->setName('blueprint.delete');
+
+    $app->get('/api/cards/search', [CardsController::class, 'searchCards'])
+        ->setName('api.cards.search');
+
+    // List all employees
+    $app->get('/employees', [EmployeeController::class, 'index'])->setName('employees.index');
+
+    // Create employee
+    $app->post('/employees/create', [EmployeeController::class, 'create'])->setName('employees.create');
+
+    // Get employee for editing
+    $app->get('/employees/{id}/edit', [EmployeeController::class, 'edit'])->setName('employees.edit');
+
+    // Update employee
+    $app->post('/employees/{id}/update', [EmployeeController::class, 'update'])->setName('employees.update');
+
+    // Delete employee
+    $app->post('/employees/{id}/delete', [EmployeeController::class, 'delete'])->setName('employees.delete');
 };
