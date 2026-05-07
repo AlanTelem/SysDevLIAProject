@@ -21,9 +21,10 @@
 
         <i class="bi bi-sun"></i>
 
-        <button class="logout-btn">
+
+        <a class="logout-btn" href="/SysDevLIAProject/logout">
             Logout
-        </button>
+        </a>
     </div>
 
 </div>
@@ -49,7 +50,7 @@
     <!-- LINKS -->
     <div class="sidebar-links">
 
-        <a href="#" class="sidebar-link">
+        <a href="/SysDevLIAProject/cards" class="sidebar-link">
             <i class="bi bi-box-seam"></i>
             Inventory
         </a>

@@ -109,7 +109,15 @@ class AuthController extends BaseController
 
     public function logout(Request $request, Response $response, array $args): Response
     {
+        $existingFlashes = $_SESSION['flash_messages'] ?? [];
+
         SessionManager::destroy();
+        SessionManager::start();
+
+        if (!empty($existingFlashes)) {
+            $_SESSION['flash_messages'] = $existingFlashes;
+        }
+
         FlashMessage::success('You have successfully logged out');
         return $this->redirect($request, $response, 'auth.login');
     }

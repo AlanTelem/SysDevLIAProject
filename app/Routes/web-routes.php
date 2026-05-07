@@ -54,7 +54,8 @@ return static function (Slim\App $app): void {
     });
 
     $app->get('/cards', [CardsController::class, 'index'])
-        ->setName('card.index');
+        ->setName('card.index')
+        ->add($container->get(AuthMiddleware::class));
 
     $app->get('/cards/blueprint/create', [CardsController::class, 'addBlueprint'])
         ->setName('blueprint.create');
@@ -115,8 +116,12 @@ return static function (Slim\App $app): void {
         ->setName('profile.admin.update')
         ->add($container->get(AdminAuthMiddleware::class))
         ->add($container->get(AuthMiddleware::class));
+    //! for debugging only
+    $app->get('/employees', [EmployeeController::class, 'index'])
+        ->setName('admin.employees');
 
-
+    $app->get('/employees/{id}/edit', [EmployeeController::class, 'edit'])
+        ->setName('admin.employees.edit');
 
     // List all employees
     $app->group('/admin', function ($group) {

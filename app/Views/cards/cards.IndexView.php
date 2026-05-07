@@ -2,7 +2,7 @@
 
 use App\Helpers\ViewHelper;
 
-require_once __DIR__ . '/../user/dashboardHeader.php';
+require_once __DIR__ . '/../common/dashboardHeader.php';
 
 
 $title = $data['title'] ?? "Cards";

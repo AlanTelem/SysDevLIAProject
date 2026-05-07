@@ -25,6 +25,7 @@ ViewHelper::loadHeader($title ?? 'Log In');
 
             <!-- RIGHT SIDE -->
             <div class="col-md-9 login-wrapper">
+
                 <div class="login-box">
 
                     <h1 class="login-title">Welcome back!</h1>

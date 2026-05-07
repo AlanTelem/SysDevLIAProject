@@ -18,6 +18,10 @@ class AuthMiddleware implements MiddlewareInterface
     public function process(Request $request, RequestHandler $handler): Response
     {
         $isAuthenticated = SessionManager::get('is_authenticated');
+        if ($isAuthenticated === null) {
+            $account = SessionManager::get('account', []);
+            $isAuthenticated = $account['is_authenticated'] ?? false;
+        }
 
         if (!$isAuthenticated) {
             FlashMessage::error('Please log in to access this page.');
