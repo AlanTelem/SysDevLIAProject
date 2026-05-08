@@ -96,7 +96,7 @@ return static function (Slim\App $app): void {
 
     $app->get('/cards/{id}', [CardsController::class, 'showCard'])
         ->setName('card.show')
-        ->add($container->get(AdminAuthMiddleware::class));
+        ->add($container->get(AuthMiddleware::class));
 
 
     $app->get('/profile', [ProfileController::class, 'employeeProfile'])

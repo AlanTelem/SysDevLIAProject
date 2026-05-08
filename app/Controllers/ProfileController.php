@@ -3,6 +3,8 @@
 namespace App\Controllers;
 
 use App\Domain\Models\ProfileModel;
+use App\Helpers\FlashMessage;
+use App\Helpers\SessionManager;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
@@ -29,7 +31,12 @@ class ProfileController extends BaseController
 
     public function employeeProfile(Request $request, Response $response): Response
     {
-        $profile = $_SESSION['profile'];
+        $profile = SessionManager::get('profile');
+
+        if ($profile === null) {
+            FlashMessage::error('Profile not found. Please contact an administrator.');
+            return $this->redirect($request, $response, 'card.index');
+        }
 
         $data = $this->profileModel->getProfile($profile['id']);
         $data['position'] = 'Employee Position';   // ADD THIS
@@ -49,7 +56,12 @@ class ProfileController extends BaseController
 
     public function adminProfile(Request $request, Response $response): Response
     {
-        $profile = $_SESSION['profile'];
+        $profile = SessionManager::get('profile');
+
+        if ($profile === null) {
+            FlashMessage::error('Profile not found. Please contact an administrator.');
+            return $this->redirect($request, $response, 'card.index');
+        }
 
         $data = $this->profileModel->getProfile($profile['id']);
         $data['position'] = 'Admin Position';   // ADD THIS
@@ -68,7 +80,13 @@ class ProfileController extends BaseController
 
     public function updateEmployee(Request $request, Response $response): Response
     {
-        $profile = $_SESSION['profile'];
+        $profile = SessionManager::get('profile');
+
+        if ($profile === null) {
+            FlashMessage::error('Profile not found. Please contact an administrator.');
+            return $this->redirect($request, $response, 'card.index');
+        }
+
         $data = $request->getParsedBody();
 
         $this->profileModel->updateProfile($profile['id'], $data);
@@ -78,7 +96,13 @@ class ProfileController extends BaseController
 
     public function updateAdmin(Request $request, Response $response): Response
     {
-        $profile = $_SESSION['profile'];
+        $profile = SessionManager::get('profile');
+
+        if ($profile === null) {
+            FlashMessage::error('Profile not found. Please contact an administrator.');
+            return $this->redirect($request, $response, 'card.index');
+        }
+
         $data = $request->getParsedBody();
 
         $this->profileModel->updateProfile($profile['id'], $data);

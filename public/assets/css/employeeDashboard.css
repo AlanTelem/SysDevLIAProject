@@ -13,7 +13,16 @@ body {
     margin-left: 140px;
     margin-top: 70px;
 }
+.card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
 
+.card-link:hover .card-item {
+    transform: translateY(-3px);
+    transition: 0.2s ease;
+}
 /* TOP BAR */
 .dashboard-top {
     display: flex;
@@ -79,6 +88,18 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 25px;
+}
+
+/* CARD LINK */
+.card-link {
+    text-decoration: none;
+    color: inherit;
+    display: contents;
+}
+
+.card-link:hover .card-item {
+    transform: translateY(-3px);
+    transition: 0.2s ease;
 }
 
 /* CARD */

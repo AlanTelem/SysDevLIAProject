@@ -4,7 +4,7 @@
 
 use App\Helpers\ViewHelper;
 
-ViewHelper::loadHeader($title ?? 'Admin Dashboard');
+ViewHelper::loadHeader($title ?? 'Dashboard');
 $totalCards = $data['totalCards'] ?? 0;
 $totalEmployees = $data['totalEmployees'] ?? 0;
 $totalValue = $data['totalValue'] ?? 0.00;
@@ -54,37 +54,43 @@ require_once __DIR__ . '/../common/mainHeader.php';
 
         <?php foreach ($recentCards as $card): ?>
 
-            <div class="card-item">
+            <a
+                href="<?= APP_BASE_URL ?>/cards/<?= $card['card_id'] ?>"
+                class="card-link">
+                <div class="card-item">
+                    <div class="card-image">
+                        <img
+                            src="<?= APP_BASE_URL ?>/public/assets/images/default.png"
+                            alt="<?= htmlspecialchars($card['card_name']) ?>">
+                    </div>
 
-                <div class="card-image">
-                    <img
-                        src="<?= APP_BASE_URL ?>/public/uploads/cards/<?= $card['image'] ?>"
-                        alt="<?= htmlspecialchars($card['card_name']) ?>">
-                </div>
+                    <div class="card-info">
 
-                <div class="card-info">
+                        <h4><?= htmlspecialchars($card['card_name']) ?></h4>
 
-                    <h4><?= htmlspecialchars($card['card_name']) ?></h4>
+                        <p class="price">
+                            Foil: <?= htmlspecialchars($card['foil'] === 1 ? 'Yes' : 'No') ?>
+                        </p>
+                        <p class="price">
+                            Physical Condition: <?= htmlspecialchars($card['physical_condition']) ?>
+                        </p>
 
-                    <p class="price">
-                        INSERT PRICE HERE
-                    </p>
+                        <div class="card-actions" onclick="event.stopPropagation()">
 
-                    <div class="card-actions">
+                            <a href="<?= APP_BASE_URL ?>/cards/edit/<?= $card['card_id'] ?>">
+                                ✏
+                            </a>
 
-                        <a href="<?= APP_BASE_URL ?>/cards/edit/<?= $card['card_id'] ?>">
-                            ✏
-                        </a>
+                            <a href="<?= APP_BASE_URL ?>/cards/delete/<?= $card['card_id'] ?>">
+                                🗑
+                            </a>
 
-                        <a href="<?= APP_BASE_URL ?>/cards/delete/<?= $card['card_id'] ?>">
-                            🗑
-                        </a>
+                        </div>
 
                     </div>
 
                 </div>
-
-            </div>
+            </a>
 
         <?php endforeach; ?>
 

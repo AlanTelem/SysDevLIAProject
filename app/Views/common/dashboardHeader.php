@@ -49,6 +49,10 @@
 
     <!-- LINKS -->
     <div class="sidebar-links">
+        <a href="/SysDevLIAProject/dashboard" class="sidebar-link">
+            <i class="bi bi-clipboard-data"></i>
+            Dashboard
+        </a>
 
         <a href="/SysDevLIAProject/cards" class="sidebar-link">
             <i class="bi bi-box-seam"></i>
