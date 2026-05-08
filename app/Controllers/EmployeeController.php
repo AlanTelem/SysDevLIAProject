@@ -26,6 +26,11 @@ class EmployeeController extends BaseController
         ]);
     }
 
+    public function showCreate(Request $request, Response $response): Response
+    {
+        return $this->render($response, 'employees/create.php');
+    }
+
     public function create(Request $request, Response $response): Response
     {
         $data = $request->getParsedBody();

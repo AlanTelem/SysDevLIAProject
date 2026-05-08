@@ -4,6 +4,9 @@ use App\Helpers\ViewHelper;
 
 ViewHelper::loadHeader($title ?? 'Employee List');
 $employees = $data['employees'] ?? [];
+
+require_once __DIR__ . '/../common/mainHeader.php';
+
 ?>
 
 <link rel="stylesheet" href="<?= APP_BASE_URL ?>/public/assets/css/employeeList.css">
@@ -14,9 +17,9 @@ $employees = $data['employees'] ?? [];
 
         <!-- HEADER -->
         <div class="employee-header">
-            <h1>List of Employees:</h1>
+            <h1>List of Employees</h1>
 
-            <a href="<?= APP_BASE_URL ?>/employees/create" class="create-btn">
+            <a href="<?= APP_BASE_URL ?>/admin/employees/create" class="create-btn">
                 Create Employee
             </a>
         </div>

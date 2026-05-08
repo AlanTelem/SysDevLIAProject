@@ -123,11 +123,17 @@ return static function (Slim\App $app): void {
     $app->get('/employees/{id}/edit', [EmployeeController::class, 'edit'])
         ->setName('admin.employees.edit');
 
+    $app->get('/employees/create', [EmployeeController::class, 'showCreate'])
+        ->setName('admin.employees.show_create');
+
     // List all employees
     $app->group('/admin', function ($group) {
 
         $group->get('/employees', [EmployeeController::class, 'index'])
             ->setName('admin.employees');
+
+        $group->get('/employees/create', [EmployeeController::class, 'showCreate'])
+            ->setName('admin.employees.show_create');
 
         $group->post('/employees/create', [EmployeeController::class, 'create'])
             ->setName('admin.employees.create');

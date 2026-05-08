@@ -2,13 +2,9 @@
 
 use App\Helpers\ViewHelper;
 
-
-$employee = $data['employee'] ?? [];
-ViewHelper::loadHeader($title ?? 'Modify Employee');
-//dd($employee);
+ViewHelper::loadHeader($title ?? 'Create Employee');
 require_once __DIR__ . '/../common/mainHeader.php';
 ?>
-
 
 <link rel="stylesheet" href="<?= APP_BASE_URL ?>/public/assets/css/editEmployee.css">
 
@@ -20,13 +16,11 @@ require_once __DIR__ . '/../common/mainHeader.php';
         <div class="edit-left">
 
             <div class="image-box">
-                <img src="<?= $employee['privilege'] == 1
-                                ? APP_BASE_URL . '/public/assets/images/admin.png'
-                                : APP_BASE_URL . '/public/assets/images/user.png' ?>"
+                <img src="<?= APP_BASE_URL ?>/public/assets/images/user.png"
                     alt="Employee">
             </div>
 
-            <button class="photo-btn">
+            <button type="button" class="photo-btn">
                 Icon Picture
             </button>
 
@@ -35,23 +29,27 @@ require_once __DIR__ . '/../common/mainHeader.php';
         <!-- RIGHT SIDE -->
         <div class="edit-right">
 
-            <h1>MODIFY USER</h1>
+            <h1>CREATE ACCOUNT</h1>
 
             <form method="POST"
-                action="/admin/employees/<?= $employee['profile_id'] ?>/update">
+                action="<?= APP_BASE_URL ?>/admin/employees/store">
 
-                <!-- ACCOUNT ID -->
-                <input type="hidden"
-                    name="account_id"
-                    value="<?= $employee['account_id'] ?>">
+                <!-- NAME -->
+                <div class="form-group">
+                    <label>Name:</label>
 
-                <!-- USERNAME -->
+                    <input type="text"
+                        name="name"
+                        placeholder="Enter name"
+                        required>
+                </div>
+
                 <div class="form-group">
                     <label>Username:</label>
 
                     <input type="text"
-                        name="name"
-                        value="<?= htmlspecialchars($employee['name']) ?>"
+                        name="username"
+                        placeholder="Enter username"
                         required>
                 </div>
 
@@ -61,7 +59,7 @@ require_once __DIR__ . '/../common/mainHeader.php';
 
                     <input type="email"
                         name="email"
-                        value="<?= htmlspecialchars($employee['email']) ?>"
+                        placeholder="Enter email"
                         required>
                 </div>
 
@@ -71,7 +69,8 @@ require_once __DIR__ . '/../common/mainHeader.php';
 
                     <input type="password"
                         name="password"
-                        placeholder="Leave blank to keep current password">
+                        placeholder="Enter password"
+                        required>
                 </div>
 
                 <!-- POSITION -->
@@ -85,7 +84,7 @@ require_once __DIR__ . '/../common/mainHeader.php';
                             <input type="radio"
                                 name="privilege"
                                 value="0"
-                                <?= $employee['privilege'] == 0 ? 'checked' : '' ?>>
+                                checked>
 
                             Employee
                         </label>
@@ -93,8 +92,7 @@ require_once __DIR__ . '/../common/mainHeader.php';
                         <label class="radio-label">
                             <input type="radio"
                                 name="privilege"
-                                value="1"
-                                <?= $employee['privilege'] == 1 ? 'checked' : '' ?>>
+                                value="1">
 
                             Admin
                         </label>
@@ -103,12 +101,11 @@ require_once __DIR__ . '/../common/mainHeader.php';
 
                 </div>
 
-
                 <!-- BUTTON -->
                 <div class="submit-container">
 
                     <button type="submit" class="modify-btn">
-                        MODIFY
+                        CREATE
                     </button>
 
                 </div>
