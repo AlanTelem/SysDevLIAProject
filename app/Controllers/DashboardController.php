@@ -21,7 +21,7 @@ class DashboardController extends BaseController
     public function index(Request $request, Response $response): Response
     {
         // Get logged-in user profile (you already have this in your auth system)
-        $profile = $_SESSION['profile'];
+        $profile = $_SESSION['profile'] ?? null;
         // privilege: 0 = employee, 1 = admin
 
         // Dashboard data
@@ -38,11 +38,11 @@ class DashboardController extends BaseController
         ];
 
         // Admin dashboard
-        if ($profile['privilege'] == 1) {
+        if ($profile && $profile['privilege'] == 1) {
             return $this->render($response, 'dashboard/admin.php', $data);
         }
 
-        // Employee dashboard
+        // Employee dashboard (default)
         return $this->render($response, 'dashboard/employee.php', $data);
     }
 }

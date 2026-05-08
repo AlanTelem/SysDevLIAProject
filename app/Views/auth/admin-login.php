@@ -2,7 +2,7 @@
 
 use App\Helpers\ViewHelper;
 
-ViewHelper::loadHeader($title ?? 'Log In');
+ViewHelper::loadHeader($title ?? 'Admin Login');
 ?>
 <?= App\Helpers\FlashMessage::render() ?>
 <div class="login-page">
@@ -11,8 +11,6 @@ ViewHelper::loadHeader($title ?? 'Log In');
 
             <!-- LEFT SIDE -->
             <div class="col-md-3 left-panel d-none d-md-block">
-                <!--<h2>OTHER WORLD GAMES</h2>
-                <p>CARDS & GAMES</p> -->
                 <img src="/SysDevLIAProject/public/assets/images/logo.png"
                     alt="Other World Games Logo"
                     class="logo">
@@ -28,7 +26,8 @@ ViewHelper::loadHeader($title ?? 'Log In');
 
                 <div class="login-box">
 
-                    <h1 class="login-title">Welcome back!</h1>
+                    <h1 class="login-title">Admin Login</h1>
+
 
                     <form method="POST" action="<?= APP_BASE_URL ?>/login">
 
@@ -60,8 +59,6 @@ ViewHelper::loadHeader($title ?? 'Log In');
                         </div>
 
                     </form>
-
-                    <a href="<?= APP_BASE_URL ?>/admin/login" class="admin-link">Admin Login</a>
 
                 </div>
             </div>

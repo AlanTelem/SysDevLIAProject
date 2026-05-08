@@ -125,6 +125,16 @@ return static function (Slim\App $app): void {
 
     $app->get('/employees/create', [EmployeeController::class, 'showCreate'])
         ->setName('admin.employees.show_create');
+    //! Admin routes TEST
+    $app->get('/admin/login', [AuthController::class, 'adminLogin'])
+        ->setName('auth.adminLogin');
+
+    $app->post('/admin/login', [AuthController::class, 'authenticateAdmin']);
+
+    // Protected admin route example (requires AdminAuthMiddleware)
+    $app->get('/admin/dashboard', [DashboardController::class, 'index'])
+        ->setName('admin.dashboard')
+        ->add(AdminAuthMiddleware::class);
 
     // List all employees
     $app->group('/admin', function ($group) {

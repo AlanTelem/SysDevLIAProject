@@ -28,6 +28,24 @@ class ProfileModel extends BaseModel
         return $this->selectOne($sql, [':id' => $profileId]);
     }
 
+    public function getProfileByAccountId(int $accountId): ?array
+    {
+        $sql = "
+            SELECT
+                p.id AS profile_id,
+                p.name,
+                p.privilege,
+                a.email,
+                a.id AS account_id
+            FROM profiles p
+            JOIN accounts a ON p.account_id = a.id
+            WHERE a.id = :account_id
+        ";
+
+        $result = $this->selectOne($sql, [':account_id' => $accountId]);
+        return $result ?: null;
+    }
+
     public function updateProfile(int $profileId, array $data)
     {
         // Update name

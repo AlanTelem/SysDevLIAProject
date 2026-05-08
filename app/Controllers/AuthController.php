@@ -8,13 +8,14 @@ use DI\Container;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use App\Domain\Models\AccountsModel;
+use App\Domain\Models\ProfileModel;
 use App\Helpers\SessionManager;
 use App\Helpers\FlashMessage;
 use Exception;
 
 class AuthController extends BaseController
 {
-    public function __construct(Container $container, private AccountsModel $accounts_model)
+    public function __construct(Container $container, private AccountsModel $accounts_model, private ProfileModel $profile_model)
     {
         parent::__construct($container);
     }
@@ -95,11 +96,21 @@ class AuthController extends BaseController
                 FlashMessage::error('Invalid Credentials.');
                 return $this->redirect($request, $response, 'auth.login');
             }
+
+            // Fetch profile data for all users
+            $profile = $this->profile_model->getProfileByAccountId($account['id']);
+
             SessionManager::set('account', [
                 'account_id' => $account['id'],
                 'email' => $account['email'],
                 'is_authenticated' => true
             ]);
+
+            // Set profile data if it exists
+            if ($profile) {
+                SessionManager::set('profile', $profile);
+            }
+
             FlashMessage::success("You are logged in with  " . SessionManager::get('account')['email']);
             return $this->redirect($request, $response, 'card.index');
         }
@@ -120,5 +131,48 @@ class AuthController extends BaseController
 
         FlashMessage::success('You have successfully logged out');
         return $this->redirect($request, $response, 'auth.login');
+    }
+
+    public function adminLogin(Request $request, Response $response, array $args): Response
+    {
+        $data = [
+            'title' => 'Admin Login'
+        ];
+        return $this->render($response, 'auth/admin-login.php', $data);
+    }
+
+    public function authenticateAdmin(Request $request, Response $response, array $args): Response
+    {
+        $form_data = $request->getParsedBody();
+        if (isset($form_data['identifier']) && isset($form_data['password'])) {
+            // Verify credentials
+            $account = $this->accounts_model->verifyCredentials($form_data['identifier'], $form_data['password']);
+            if ($account === null) {
+                FlashMessage::error('Invalid Credentials.');
+                return $this->redirect($request, $response, 'auth.adminLogin');
+            }
+
+            // Fetch profile to check privilege
+            $profile = $this->profile_model->getProfileByAccountId($account['id']);
+
+            // Check if user is admin (privilege == 1)
+            if (!$profile || $profile['privilege'] != 1) {
+                FlashMessage::error('You do not have admin access.');
+                return $this->redirect($request, $response, 'auth.adminLogin');
+            }
+
+            // Set session data
+            SessionManager::set('account', [
+                'account_id' => $account['id'],
+                'email' => $account['email'],
+                'is_authenticated' => true
+            ]);
+            SessionManager::set('profile', $profile);
+
+            FlashMessage::success("Admin logged in successfully");
+            return $this->redirect($request, $response, 'admin.dashboard');
+        }
+        FlashMessage::error('Please input credentials');
+        return $this->redirect($request, $response, 'auth.adminLogin');
     }
 }
