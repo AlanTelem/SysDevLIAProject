@@ -7,6 +7,7 @@ use App\Helpers\FlashMessage;
 use DI\Container;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use App\Domain\Services\CardNexusImportService;
 
 class CardsController extends BaseController
 {
@@ -56,6 +57,13 @@ class CardsController extends BaseController
         return $this->render($response, 'cards/cards.IndexView.php', $data);
     }
 
+    public function importFromCSV(Request $request, Response $response, array $args): Response
+    {
+        $importService = new CardNexusImportService($this->cardsModel);
+        $rowsAffected = $importService->import();
+        FlashMessage::info("You have imported $rowsAffected rows from the CSV");
+        return $this->render($response, 'cards/cards.IndexView');
+    }
     public function addBlueprint(Request $request, Response $response, array $args): Response
     {
 

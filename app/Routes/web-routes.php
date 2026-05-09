@@ -76,6 +76,7 @@ return static function (Slim\App $app): void {
     $app->post('/cards/store', [CardsController::class, 'storeCards'])
         ->setName('card.store');
 
+    $app->get('/inventory/import', [CardsController::class, 'importFromCSV']);
     $app->get('/cards/{id}/edit-blueprint', [CardsController::class, 'editCardBlueprint'])
         ->setName('blueprint.edit');
 

@@ -85,6 +85,43 @@ WHERE tcg.id = :tcg_id;";
         return $this->selectAll($sql, $params);
     }
 
+    public function bulkAddCards(array $cards):int
+    {
+        $this->beginTransaction();
+        $rowsAffected=0;
+        $transactionCounter = 0;
+        foreach($cards as $card){
+            if(
+                !isset($card['blueprint_id'])||
+                !isset($card['condition_id'])||
+                !isset($card['foil'])
+            ){
+                continue;
+            }
+            $sql = "INSERT INTO cards (
+                blueprint_id,
+                condition_id,
+                foil)
+            VALUES (
+            :blueprint_id,
+            :condition_id,
+            :foil)";
+            $params=
+            [
+                'blueprint_id' => $card['blueprint_id'],
+                'condition_id' => $card['condition_id'],
+                'foil' => $card['foil']
+            ];
+            $rowsAffected+=$this->execute($sql, $params);
+            $transactionCounter++;
+            if($transactionCounter%1000===0){
+                $this->commit();
+                $this->beginTransaction();
+            }
+        }
+        $this->commit();
+        return $rowsAffected;
+    }
     public function getCardsBySetId(int $set_id): array
     {
         $sql =
@@ -147,7 +184,7 @@ WHERE cc.id = :condition_id;";
         return $this->selectAll($sql, $params);
     }
 
-    public function getAllSets()
+    public function getAllSets():array
     {
         $this->getOnePieceSets();
         $this->getYugiohSets();
@@ -184,7 +221,9 @@ WHERE cc.id = :condition_id;";
             cb.id AS blueprint_id,
             cb.name AS blueprint_name,
             s.id AS set_id,
-            s.name AS set_name
+            s.name AS set_name,
+            cb.maker_id AS maker_id
+
         FROM card_blueprints cb
         JOIN sets s ON cb.set_id = s.id
     ";
@@ -211,6 +250,20 @@ WHERE cc.id = :condition_id;";
          VALUES (:set_id, :name)",
             [
                 'set_id' => $data['set_id'],
+                'name' => $data['name']
+            ]
+        );
+
+        return $this->lastInsertId();
+    }
+
+    public function addAndGetSet(array $data): string
+    {
+        $this->execute(
+            "INSERT INTO sets (tcg_id, name)
+         VALUES (:tcg_id, :name)",
+            [
+                'tcg_id' => $data['tcg_id'],
                 'name' => $data['name']
             ]
         );
@@ -341,7 +394,7 @@ WHERE cc.id = :condition_id;";
         return $this->count("SELECT COUNT(*) AS total_cards FROM cards");
     }
 
-    public function totalBlueprintss(): int
+    public function totalBlueprints(): int
     {
         return $this->count("SELECT COUNT(*) AS total_blueprints FROM card_blueprints");
     }
