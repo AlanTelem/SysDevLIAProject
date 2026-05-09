@@ -718,6 +718,13 @@ WHERE cc.id = :condition_id;";
             $existingLookup[$existingCard['maker_id']] = true;
         }
 
+
+        $existingSets = $this->selectAll('SELECT id, maker_designated_id FROM sets WHERE tcg_id = 3');
+        $setLookup = [];
+        foreach ($existingSets as $set) {
+            $setLookup[$set['maker_designated_id']] = $set['id'];
+        }
+
         $sql = 'INSERT INTO card_blueprints (
                 maker_id,
                 set_id,
@@ -743,29 +750,25 @@ WHERE cc.id = :condition_id;";
             $thumbnail = $card['card_images'][0]['image_url_small'] ?? null;
             $image = $card['card_images'][0]['image_url'] ?? null;
             foreach ($card['card_sets'] as $cardSet) {
+                $printingCode = $cardSet['set_code'];
                 $setCode = preg_replace('/-\d+$/', '', $cardSet['set_code']);
 
                 if (!isset($setLookup[$setCode])) {
                     continue;
                 }
-
-                $key = $card['id'] . '|' . $setCode;
-
-                if (isset($existingLookup[$key])) {
+                if (isset($existingLookup[$printingCode])) {
                     continue;
                 }
 
-
-
                 $count += $this->execute($sql, [
-                    'maker_id' => $card['id'],
+                    'maker_id' => $printingCode,
                     'set_id' => $setLookup[$setCode],
                     'name' => $card['name'],
                     'thumbnail_url' => $thumbnail,
                     'large_art_url' => $image,
                 ]);
 
-                $existingLookup[$key] = true;
+                $existingLookup[$printingCode] = true;
 
                 $commitCounter++;
 
@@ -776,5 +779,7 @@ WHERE cc.id = :condition_id;";
             }
         }
         $this->commit();
+
+        return $count;
     }
 }
