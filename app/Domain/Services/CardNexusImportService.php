@@ -59,7 +59,7 @@ class CardNexusImportService extends BaseService
         foreach ($existingBlueprints as $blueprint) {
 
             $key =
-                trim($blueprint['cb.maker_id'])
+                trim($blueprint['maker_id'])
                 . '|'
                 . $blueprint['set_id'];
 
