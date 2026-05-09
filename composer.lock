@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "92afd95e6d00fc8a1a4a30a16c8a7b55",
+    "content-hash": "cba71c9721d17d9ab58c5fe85e7938dc",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -61,6 +61,68 @@
                 "source": "https://github.com/php-fig/http-message-util/tree/1.1.5"
             },
             "time": "2020-11-24T22:02:12+00:00"
+        },
+        {
+            "name": "halaxa/json-machine",
+            "version": "1.2.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/halaxa/json-machine.git",
+                "reference": "8bf0b0ff6ff60ab480778eaa5ad7d505b442c2d4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/halaxa/json-machine/zipball/8bf0b0ff6ff60ab480778eaa5ad7d505b442c2d4",
+                "reference": "8bf0b0ff6ff60ab480778eaa5ad7d505b442c2d4",
+                "shasum": ""
+            },
+            "require": {
+                "php": "7.2 - 8.5"
+            },
+            "require-dev": {
+                "ext-json": "*",
+                "friendsofphp/php-cs-fixer": "^3.0",
+                "phpstan/phpstan": "^1.10",
+                "phpunit/phpunit": "^8.0"
+            },
+            "suggest": {
+                "ext-json": "To run JSON Machine out of the box without custom decoders.",
+                "guzzlehttp/guzzle": "To run example with GuzzleHttp"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/functions.php"
+                ],
+                "psr-4": {
+                    "JsonMachine\\": "src/"
+                },
+                "exclude-from-classmap": [
+                    "src/autoloader.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Filip Halaxa",
+                    "email": "filip@halaxa.cz"
+                }
+            ],
+            "description": "Efficient, easy-to-use and fast JSON pull parser",
+            "support": {
+                "issues": "https://github.com/halaxa/json-machine/issues",
+                "source": "https://github.com/halaxa/json-machine/tree/1.2.6"
+            },
+            "funding": [
+                {
+                    "url": "https://ko-fi.com/G2G57KTE4",
+                    "type": "other"
+                }
+            ],
+            "time": "2025-12-05T14:53:09+00:00"
         },
         {
             "name": "laravel/serializable-closure",

@@ -18,6 +18,8 @@ ViewHelper::loadHeader($page_title);
 <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. </p>
 <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos. </p>
 
+<p><?= $data['bulk_data'] ?? "it didn't work"?></p>
+
 
 <?php
 

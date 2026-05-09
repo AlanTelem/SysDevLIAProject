@@ -3,10 +3,14 @@
 namespace App\Domain\Models;
 
 use App\Helpers\Core\PDOService;
+use App\Domain\Services\TCGApiService;
+use Exception;
+use JsonMachine\Items;
+use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
 class CardsModel extends BaseModel
 {
-    public function __construct(PDOService $db_service)
+    public function __construct(PDOService $db_service, private TCGApiService $tcgapiService)
     {
         parent::__construct($db_service);
     }
@@ -145,6 +149,7 @@ WHERE cc.id = :condition_id;";
 
     public function getAllSets()
     {
+        $this->getOnePieceSets();
         $sql = "
         SELECT
             s.id AS set_id,
@@ -435,5 +440,211 @@ WHERE cc.id = :condition_id;";
     public function calculateInventoryValue(): float
     {
         return 0.0; // no value stored in your schema
+    }
+
+    public function importMTGSets()
+    {
+        $fileName = APP_BASE_DIR_PATH . '/data/mtgsets.json';
+        $sets = Items::fromFile(
+            $fileName,
+            ['decoder' => new ExtJsonDecoder(true)]
+        );
+        $sql = 'INSERT INTO sets (tcg_id, name, maker_designated_id, release_date)
+    VALUES (1, :name, :maker_designated_id, :release_date)';
+        $this->beginTransaction();
+        $count = 0;
+        foreach ($sets as $set) {
+            if ($set['digital'] === true) {
+                continue;
+            }
+            $this->execute(
+                $sql,
+                [
+                    'name' => $set['name'],
+                    'maker_designated_id' => $set['code'],
+                    'release_date' => $set['released_at']
+                ]
+            );
+            $count++;
+            if ($count % 1000 === 0) {
+                $this->commit();
+                $this->beginTransaction();
+            }
+        }
+        $this->commit();
+    }
+    public function populateMTGCardsFromScryfall()
+    {
+        $mtgCardArray = APP_BASE_DIR_PATH . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'mtg.json';
+        $items = Items::fromFile(
+            $mtgCardArray,
+            ['decoder' => new ExtJsonDecoder(true)]
+        );
+
+        $setLookup = [];
+
+        $sets = $this->selectAll('SELECT id, maker_designated_id FROM sets WHERE tcg_id = 1');
+
+        foreach ($sets as $set) {
+            $setLookup[$set['maker_designated_id']] = $set['id'];
+        }
+        $sql = "
+        INSERT INTO card_blueprints (
+            name,
+            set_id,
+            thumbnail_url,
+            large_art_url,
+            maker_id
+        )
+        VALUES (
+            :name,
+            :set,
+            :thumbnail_url,
+            :large_art_url,
+            :maker_id
+        )";
+        $this->beginTransaction();
+        $count = 0;
+        foreach ($items as $card) {
+            if (
+                ($card['object'] ?? '') !== 'card' ||
+                ($card['digital'] ?? false) === true ||
+                ($card['lang'] ?? 'en') !== 'en'
+            ) {
+                continue;
+            }
+
+            $setCode = $card['set'] ?? null;
+
+            if (!$setCode || !isset($setLookup[$setCode])) {
+                continue;
+            }
+            $thumbnail = $card['image_uris']['small']
+                ?? $card['card_faces'][0]['image_uris']['small']
+                ?? null;
+
+            $large = $card['image_uris']['large']
+                ?? $card['card_faces'][0]['image_uris']['large']
+                ?? null;
+
+            $this->execute(
+                $sql,
+                [
+                    'name' => $card['name'],
+                    'set' => $setLookup[$setCode],
+                    'thumbnail_url' => $thumbnail,
+                    'large_art_url' => $large,
+                    'maker_id' => $card['oracle_id']
+                ]
+            );
+
+            $count++;
+            if ($count % 1000 === 0) {
+                $this->commit();
+                $this->beginTransaction();
+            }
+        }
+        $this->commit();
+    }
+
+    public function getOnePieceSets():int
+    {
+        $json = $this->tcgapiService->fetchOnePieceSetJson();
+        if (!$json) {
+            throw new Exception('Failed to get data from api.');
+        }
+        $sets = json_decode($json, true);
+
+        if (!is_array($sets)) {
+            throw new Exception("Invalid API response.");
+        }
+
+        $existingSets = $this->selectAll('SELECT maker_designated_id FROM sets WHERE tcg_id = 7');
+
+        $sql = 'INSERT INTO sets (
+                tcg_id,
+                name,
+                maker_designated_id
+            )
+            VALUES (
+                7,
+                :name,
+                :maker_designated_id
+            )';
+
+        $count = 0;
+
+        foreach ($sets as $set) {
+            if (in_array($set['set_id'], $existingSets)) {
+                continue;
+            }
+            $count+= $this->execute($sql, [
+                'name' => $set['set_name'],
+                'maker_designated_id' => $set['set_id']
+            ]);
+        }
+        return $count;
+    }
+
+    public function populateOnePieceBluePrints():int{
+        $json = $this->tcgapiService->fetchOnePieceCardsJson();
+        if (!$json) {
+            throw new Exception('Failed to get data from api.');
+        }
+        $cards = json_decode($json, true);
+
+        if (!is_array($cards)) {
+            throw new Exception("Invalid API response.");
+        }
+
+        $existingCards = $this->selectAll(
+            'SELECT maker_id
+            FROM card_blueprints
+            LEFT JOIN sets ON card_blueprints.set_id = sets.id
+            WHERE sets.tcg_id = 7');
+
+        $existingSets = $this->selectAll('SELECT id, maker_designated_id FROM sets WHERE tcg_id = 7');
+        $setLookup = [];
+        foreach ($existingSets as $set) {
+            $setLookup[$set['maker_designated_id']] = $set['id'];
+        }
+
+        $sql = 'INSERT INTO card_blueprints (
+                maker_id,
+                set_id,
+                name,
+                thumbnail_url,
+                large_art_url
+            )
+            VALUES (
+                :maker_id,
+                :set_id,
+                :name,
+                :thumbnail_url,
+                :large_art_url
+            )';
+
+        $count = 0;
+        $commitCounter=0;
+        $this->beginTransaction();
+        foreach ($cards as $card) {
+            if (in_array($card['card_set_id'], $existingCards)) {
+                continue;
+            }
+            $count+= $this->execute($sql, [
+                'maker_id'=>$card['card_set_id'],
+                'set_id'=>$setLookup[$card['set_id']],
+                'name'=>$card['card_name'],
+                'thumbnail_url'=>$card['card_image'] ?? null,
+                'large_art_url'=>$card['card_image'] ?? null,
+            ]);
+            $commitCounter++;
+            if ($count % 1000 === 0) {
+                $this->commit();
+                $this->beginTransaction();
+            }
+        }
+        $this->commit();
+        return $count;
     }
 }

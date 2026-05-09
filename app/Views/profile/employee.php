@@ -8,6 +8,13 @@ require_once __DIR__ . '/../common/mainHeader.php';
 ?>
 
 <link rel="stylesheet" href="<?= APP_BASE_URL ?>/public/assets/css/profile.css">
+<?php
+$isAdmin = ($profile['privilege'] ?? 0) == 1;
+
+$role = $isAdmin ? 'Admin' : 'Employee';
+$roleClass = $isAdmin ? 'admin' : 'employee';
+?>
+
 
 <div class="profile-page">
 
@@ -16,7 +23,9 @@ require_once __DIR__ . '/../common/mainHeader.php';
 
         <div class="profile-header">
             <h1><?= htmlspecialchars($profile['name'] ?? 'Employee') ?></h1>
-            <span class="role-badge employee">Employee</span>
+            <span class="role-badge <?= $roleClass ?>">
+                <?= $role ?>
+            </span>
         </div>
 
         <div class="profile-info">
