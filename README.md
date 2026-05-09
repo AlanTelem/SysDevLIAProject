@@ -1,3 +1,21 @@
+# Card Inventory
+Applications used:
+   - Wampoon (Apache and MariaDB servers)
+   - VS-Code
+
+Steps done for our implementation:
+   - Install Wampoon into root directory
+   - Clone this repo into htdocs
+   - Start both Apache and MariaDB servers
+   - Open localhost on both servers
+   - On the PHPmyAdmin, click on import
+   - Import  the database 'tcg_inventory' and the inserts
+         (located under data/database)
+   - On Wampoons dashboard, open the cloned repo
+   - You can now access the project
+
+
+
 # Slim Framework Starter Template
 
 A lightweight MVC web application starter template built on top of the Slim PHP microframework. Ideal for projects that require Slim's simplicity without sacrificing the benefits of a clean MVC architecture.
