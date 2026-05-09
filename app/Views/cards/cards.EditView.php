@@ -2,55 +2,156 @@
 
 use App\Helpers\ViewHelper;
 
-$title = $data['title'] ?? 'Add Card';
-$card = $data['card'] ?? [];
-$blueprints = $data['blueprints'] ?? [];
-$conditions = $data['conditions'] ?? [];
+ViewHelper::loadHeader($title ?? 'Edit Card');
+require_once __DIR__ . '/../common/mainHeader.php';
 
-ViewHelper::loadHeader($title);
+$cardV = $card ?? null;
+
+if (!$cardV) {
+    echo "<p>Card not found.</p>";
+    return;
+}
 ?>
-<h1 class="text-center my-4"><?= hs($title) ?></h1>
 
-<form method="POST" action="<?= APP_BASE_URL ?>/cards/<?= hs($card['card_id']) ?>/update" class="row g-3 m-3">
-    <div class="col-md-6 mb-3">
-        <label for="blueprint_id" class="form-label">Blueprints</label>
-        <select class="form-select" id="blueprint_id" name="blueprint_id"> <!-- required -->
-            <option></option>
-            <?= ViewHelper::renderSelectOptions($blueprints, $card['blueprint_id'], 'blueprint_id', 'blueprint_name');
-            ?>
-        </select>
+<link rel="stylesheet" href="<?= APP_BASE_URL ?>/public/assets/css/cardDetails.css">
+
+<div class="details-page">
+
+    <?= App\Helpers\FlashMessage::render() ?>
+
+    <!-- HEADER -->
+    <div class="details-header">
+
+        <div class="header-left">
+
+            <a href="<?= APP_BASE_URL ?>/cards" class="back-btn">
+                ←
+            </a>
+
+            <div>
+                <h1>Edit Card</h1>
+                <p>Edit card information</p>
+            </div>
+
+        </div>
+
+        <div class="header-actions">
+
+            <button type="submit" form="cardForm" class="save-btn">
+                💾 Save Changes
+            </button>
+
+            <a href="<?= APP_BASE_URL ?>/cards" class="cancel-btn">
+                ⊗ Cancel
+            </a>
+
+        </div>
+
     </div>
 
-    <div class="col-md-6 mb-3">
-        <label for="condition_id" class="form-label">Conditions</label>
-        <select class="form-select" id="condition_id" name="condition_id"> <!-- required -->
-            <option></option>
-            <?= ViewHelper::renderSelectOptions($conditions, $card['condition_id'], 'condition_id', 'condition_name') ?>
-        </select>
+    <!-- MAIN -->
+    <div class="details-container">
+
+        <!-- IMAGE -->
+        <div class="image-section">
+
+            <img
+                src="<?= APP_BASE_URL ?>/public/assets/images/<?= $cardV['card_image'] ?? 'default.png' ?>"
+                alt="<?= htmlspecialchars($cardV['card_name']) ?>">
+
+        </div>
+
+        <!-- DETAILS -->
+        <div class="form-section">
+
+            <form
+                id="cardForm"
+                method="POST"
+                action="<?= APP_BASE_URL ?>/cards/<?= $cardV['card_id'] ?>/update"
+                enctype="multipart/form-data">
+
+                <!-- TOP -->
+                <div class="card-top">
+
+                    <div>
+                        <h2><?= htmlspecialchars($cardV['card_name']) ?></h2>
+
+                        <p>
+                            <?= htmlspecialchars($cardV['tcg_name']) ?>
+                        </p>
+                    </div>
+
+                    <span class="foil-badge">
+
+                        Foil: <?= htmlspecialchars($cardV['foil']) ?>
+                    </span>
+
+                </div>
+
+                <!-- DETAILS GRID -->
+                <div class="details-grid">
+
+                    <div class="detail-box">
+                        <label>Trading Card Game</label>
+
+                        <select name="tcg_name">
+                            <option value="">Select TCG</option>
+                            <?php foreach ($tcgs ?? [] as $tcg): ?>
+                                <option value="<?= htmlspecialchars($tcg['tcg_name']) ?>" <?= $cardV['tcg_name'] === $tcg['tcg_name'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($tcg['tcg_name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="detail-box">
+                        <label>Set Name</label>
+
+                        <select name="set_name">
+                            <option value="">Select Set</option>
+                            <?php foreach ($sets ?? [] as $set): ?>
+                                <option value="<?= htmlspecialchars($set['set_name']) ?>" <?= $cardV['set_name'] === $set['set_name'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($set['set_name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="detail-box">
+                        <label>Physical Condition</label>
+
+                        <select name="physical_condition">
+                            <option value="">Select Condition</option>
+                            <?php foreach ($conditions ?? [] as $condition): ?>
+                                <option value="<?= htmlspecialchars($condition['condition_name']) ?>" <?= $cardV['physical_condition'] === $condition['condition_name'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($condition['condition_name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="detail-box">
+                        <label>Foil</label>
+
+                        <select name="foil">
+                            <option value="Yes"
+                                <?= $cardV['foil'] === 'Yes' ? 'selected' : '' ?>>
+                                Yes
+                            </option>
+
+                            <option value="No"
+                                <?= $cardV['foil'] === 'No' ? 'selected' : '' ?>>
+                                No
+                            </option>
+                        </select>
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
     </div>
 
-    <div class="col-md-6 mb-3">
-        <label for="foil" class="form-label">Conditions</label>
-        <select class="form-select" id="foil" name="foil">
-            <option value="0" <?= (isset($card['foil']) && $card['foil'] === 'No') ? 'selected' : '' ?>>
-                Non‑foil
-            </option>
-
-            <option value="1" <?= (isset($card['foil']) && $card['foil'] === 'Yes') ? 'selected' : '' ?>>
-                Foil
-            </option>
-        </select>
-
-    </div>
-
-    <div class="d-flex justify-content-evenly align-items-center">
-        <!-- TODO: Add submit button -->
-        <button type="submit" class="btn btn-success px-5">Update</button>
-
-        <!-- TODO: Add cancel link back to the admin product list -->
-        <a class="btn btn-danger px-5" href="<?= APP_BASE_URL ?>/cards">Cancel</a>
-    </div>
-
-</form>
-
-<?php ViewHelper::loadFooter(); ?>
+</div>

@@ -2,8 +2,7 @@
 
 use App\Helpers\ViewHelper;
 
-require_once __DIR__ . '/../common/dashboardHeader.php';
-require_once __DIR__ . '/../common/dashboardHeader.php';
+require_once __DIR__ . '/../common/mainHeader.php';
 
 
 $title = $data['title'] ?? "Cards";
@@ -16,9 +15,8 @@ ViewHelper::loadHeader($title);
 <?php ViewHelper::loadJsScripts(); ?>
 
 <!-- BLUEPRINT SECTION -->
-<?= App\Helpers\FlashMessage::render() ?>
+
 <div class="main-content">
-    <?= App\Helpers\FlashMessage::render() ?>
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-3 m-3">
             <h2>Card Blueprints</h2>
@@ -60,17 +58,69 @@ ViewHelper::loadHeader($title);
             </table>
         </div>
 
-
-        <!-- CARDS SECTION -->
         <!-- CARDS SECTION -->
         <div class="cards-section">
-
+            <?= App\Helpers\FlashMessage::render() ?>
             <div class="section-header">
                 <h2>Cards</h2>
 
                 <a class="add-btn" href="<?= APP_BASE_URL ?>/cards/create">
                     <i class="bi bi-plus-circle"></i> Add Card
                 </a>
+            </div>
+
+            <!-- SEARCH FORM -->
+            <div class="search-form mb-4">
+                <form method="GET" action="<?= APP_BASE_URL ?>/cards" class="row g-3">
+                    <div class="col-md-2">
+                        <input type="text" name="name" class="form-control" placeholder="Card Name" value="<?= hs($data['filters']['name'] ?? '') ?>">
+                    </div>
+                    <div class="col-md-2">
+                        <select name="tcg" class="form-control">
+                            <option value="">TCG</option>
+                            <?php foreach ($data['tcgs'] ?? [] as $tcg): ?>
+                                <option value="<?= hs($tcg['tcg_name']) ?>" <?= ($data['filters']['tcg'] ?? '') === $tcg['tcg_name'] ? 'selected' : '' ?>>
+                                    <?= hs($tcg['tcg_name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select name="set" class="form-control">
+                            <option value="">Set</option>
+                            <?php foreach ($data['sets'] ?? [] as $set): ?>
+                                <option value="<?= hs($set['set_name']) ?>" <?= ($data['filters']['set'] ?? '') === $set['set_name'] ? 'selected' : '' ?>>
+                                    <?= hs($set['set_name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select name="condition" class="form-control">
+                            <option value="">Condition</option>
+                            <?php foreach ($data['conditions'] ?? [] as $condition): ?>
+                                <option value="<?= hs($condition['condition_name']) ?>" <?= ($data['filters']['condition'] ?? '') === $condition['condition_name'] ? 'selected' : '' ?>>
+                                    <?= hs($condition['condition_name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        <select name="foil" class="form-control">
+                            <option value="">Foil</option>
+                            <option value="1" <?= ($data['filters']['foil'] ?? '') === '1' ? 'selected' : '' ?>>Yes</option>
+                            <option value="0" <?= ($data['filters']['foil'] ?? '') === '0' ? 'selected' : '' ?>>No</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary w-100">Search</button>
+                    </div>
+                </form>
+                <div class="row">
+                    <div class="col-12">
+                        <a href="<?= APP_BASE_URL ?>/cards" class="btn btn-secondary">Clear Filters</a>
+                    </div>
+                </div>
             </div>
 
             <div class="cards-grid">

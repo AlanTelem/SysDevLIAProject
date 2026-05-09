@@ -97,22 +97,15 @@ class AuthController extends BaseController
                 return $this->redirect($request, $response, 'auth.login');
             }
 
-            // Fetch profile data for all users
-            $profile = $this->profile_model->getProfileByAccountId($account['id']);
-
             SessionManager::set('account', [
                 'account_id' => $account['id'],
                 'email' => $account['email'],
                 'is_authenticated' => true
             ]);
 
-            // Set profile data if it exists
-            if ($profile) {
-                SessionManager::set('profile', $profile);
-            }
-
-            FlashMessage::success("You are logged in with  " . SessionManager::get('account')['email']);
-            return $this->redirect($request, $response, 'card.index');
+            // Always redirect to profile selection
+            FlashMessage::success("Please select a profile to continue.");
+            return $this->redirect($request, $response, 'profile.select');
         }
         FlashMessage::error('Please input credentials');
         return $this->redirect($request, $response, 'auth.login');

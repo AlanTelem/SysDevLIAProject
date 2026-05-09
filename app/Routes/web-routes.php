@@ -136,6 +136,16 @@ return static function (Slim\App $app): void {
         ->setName('admin.dashboard')
         ->add(AdminAuthMiddleware::class);
 
+    // Netflix-style profile selection
+    $app->get('/profiles', [ProfileController::class, 'selectProfile'])
+        ->setName('profile.select')
+        ->add($container->get(AuthMiddleware::class));
+
+    // Individual profile page
+    $app->get('/profile/{id}', [ProfileController::class, 'viewProfile'])
+        ->setName('profile.view')
+        ->add($container->get(AuthMiddleware::class));
+
     // List all employees
     $app->group('/admin', function ($group) {
 

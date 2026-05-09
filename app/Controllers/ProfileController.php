@@ -5,14 +5,18 @@ namespace App\Controllers;
 use App\Domain\Models\ProfileModel;
 use App\Helpers\FlashMessage;
 use App\Helpers\SessionManager;
+use DI\Container;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 class ProfileController extends BaseController
 {
     public function __construct(
+        Container $container,
         private ProfileModel $profileModel
-    ) {}
+    ) {
+        parent::__construct($container);
+    }
 
     private function formatOperations(array $ops): array
     {
@@ -52,7 +56,20 @@ class ProfileController extends BaseController
         ]);
     }
 
+    public function selectProfile(Request $request, Response $response): Response
+    {
+        $account = SessionManager::get('account');
 
+        if (!$account) {
+            return $this->redirect($request, $response, 'login');
+        }
+
+        $profiles = $this->profileModel->getProfilesByAccountId($account['account_id']);
+
+        return $this->render($response, 'profile/select.php', [
+            'profiles' => $profiles
+        ]);
+    }
 
     public function adminProfile(Request $request, Response $response): Response
     {
@@ -108,5 +125,34 @@ class ProfileController extends BaseController
         $this->profileModel->updateProfile($profile['id'], $data);
 
         return $response->withHeader('Location', '/admin/profile')->withStatus(302);
+    }
+    public function viewProfile(Request $request, Response $response, array $args): Response
+    {
+        $profileId = (int)$args['id'];
+
+        $data = $this->profileModel->getProfile($profileId);
+
+        if (!$data) {
+            FlashMessage::error('Profile not found.');
+            return $this->redirect($request, $response, 'profile.select');
+        }
+
+        // Save selected profile into session
+        SessionManager::set('profile', [
+            'id' => $data['profile_id'],
+            'name' => $data['name'],
+            'privilege' => $data['privilege']
+        ]);
+
+        // Redirect based on role
+        if ($data['privilege'] === 'admin') {
+            return $response
+                ->withHeader('Location', APP_BASE_URL . '/dashboard')
+                ->withStatus(302);
+        }
+
+        return $response
+            ->withHeader('Location', APP_BASE_URL . '/profile')
+            ->withStatus(302);
     }
 }

@@ -19,15 +19,38 @@ class CardsController extends BaseController
 
     public function index(Request $request, Response $response, array $args): Response
     {
-        $cards = $this->cardsModel->getAllCards();
+        $query = $request->getQueryParams();
+
+        // Collect all filters
+        $filters = [
+            'name'      => trim($query['name'] ?? ''),
+            'tcg'       => trim($query['tcg'] ?? ''),
+            'set'       => trim($query['set'] ?? ''),
+            'condition' => trim($query['condition'] ?? ''),
+            'foil'      => trim($query['foil'] ?? ''),
+        ];
+
+        // Limit name length
+        if (strlen($filters['name']) > 100) {
+            $filters['name'] = substr($filters['name'], 0, 100);
+        }
+
+        // Get filtered cards if any filters are applied
+        $cards = !empty(array_filter($filters)) ? $this->cardsModel->searchCards($filters) : $this->cardsModel->getAllCards();
+
         $blueprints = $this->cardsModel->getAllCardBlueprints();
         $sets = $this->cardsModel->getAllSets();
+        $tcgs = $this->cardsModel->getAllTcgs();
+        $conditions = $this->cardsModel->getAllCardConditions();
 
         $data = [
             'title' => 'Cards',
             'cards' => $cards,
             'blueprints' => $blueprints,
-            'sets' => $sets
+            'sets' => $sets,
+            'tcgs' => $tcgs,
+            'conditions' => $conditions,
+            'filters' => $filters // Pass filters back to view for form population
         ];
 
         return $this->render($response, 'cards/cards.IndexView.php', $data);
@@ -216,20 +239,22 @@ class CardsController extends BaseController
     {
         $card_id = $args['id'];
 
-        $card = $this->cardsModel->findByCardId($card_id);
+        $card = $this->cardsModel->getCardById($card_id);
 
         if (!$card) {
             FlashMessage::error('Card not found!');
             $this->redirect($request, $response, 'card.index');
         }
 
-        $blueprints = $this->cardsModel->getAllCardBlueprints();
+        $sets = $this->cardsModel->getAllSets();
+        $tcgs = $this->cardsModel->getAllTcgs();
         $conditions = $this->cardsModel->getAllCardConditions();
 
         $data = [
-            'title' => 'Edit Cards',
+            'title' => 'Edit Card',
             'card' => $card,
-            'blueprints' => $blueprints,
+            'sets' => $sets,
+            'tcgs' => $tcgs,
             'conditions' => $conditions
         ];
 
@@ -242,22 +267,28 @@ class CardsController extends BaseController
 
         $data = $request->getParsedBody();
 
-        $blueprint_id = $data['blueprint_id'];
-        $condition_id = $data['condition_id'];
+        $set_name = $data['set_name'];
+        $physical_condition = $data['physical_condition'];
+        $tcg_name = $data['tcg_name'];
         $foil = $data['foil'];
 
-        if (empty($blueprint_id)) {
-            FlashMessage::error('Please select a blueprint');
+        if (empty($set_name)) {
+            FlashMessage::error('Please select a set');
             return $this->redirect($request, $response, 'card.edit');
         }
 
-        if (empty($condition_id)) {
+        if (empty($physical_condition)) {
             FlashMessage::error('Please select a card condition');
             return $this->redirect($request, $response, 'card.edit');
         }
 
+        if (empty($tcg_name)) {
+            FlashMessage::error('Please select a TCG');
+            return $this->redirect($request, $response, 'card.edit');
+        }
+
         if ($foil === '') {
-            FlashMessage::error('Please put a valid foil');
+            FlashMessage::error('Please select foil status');
             return $this->redirect($request, $response, 'card.edit');
         }
 
@@ -275,12 +306,10 @@ class CardsController extends BaseController
         // Collect all filters
         $filters = [
             'name'      => trim($query['name'] ?? ''),
-            'brand'     => trim($query['brand'] ?? ''),
-            'rarity'    => trim($query['rarity'] ?? ''),
+            'tcg'       => trim($query['tcg'] ?? ''),
+            'set'       => trim($query['set'] ?? ''),
             'condition' => trim($query['condition'] ?? ''),
             'foil'      => trim($query['foil'] ?? ''),
-            'min_value' => $query['min_value'] ?? null,
-            'max_value' => $query['max_value'] ?? null,
         ];
 
         // Limit name length
@@ -316,8 +345,15 @@ class CardsController extends BaseController
             return $this->redirect($request, $response, 'card.index');
         }
 
+        $sets = $this->cardsModel->getAllSets();
+        $tcgs = $this->cardsModel->getAllTcgs();
+        $conditions = $this->cardsModel->getAllCardConditions();
+
         return $this->render($response, 'cards/cards.DetailView.php', [
-            'card' => $card
+            'card' => $card,
+            'sets' => $sets,
+            'tcgs' => $tcgs,
+            'conditions' => $conditions
         ]);
     }
 }

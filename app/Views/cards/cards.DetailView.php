@@ -19,6 +19,8 @@ if (!$cardV) {
 
 <div class="details-page">
 
+    <?= App\Helpers\FlashMessage::render() ?>
+
     <!-- HEADER -->
     <div class="details-header">
 
@@ -94,28 +96,40 @@ if (!$cardV) {
                     <div class="detail-box">
                         <label>Set Name</label>
 
-                        <input
-                            type="text"
-                            name="set_name"
-                            value="<?= htmlspecialchars($cardV['set_name']) ?>">
+                        <select name="set_name">
+                            <option value="">Select Set</option>
+                            <?php foreach ($sets ?? [] as $set): ?>
+                                <option value="<?= htmlspecialchars($set['set_name']) ?>" <?= $cardV['set_name'] === $set['set_name'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($set['set_name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
 
                     <div class="detail-box">
                         <label>Physical Condition</label>
 
-                        <input
-                            type="text"
-                            name="physical_condition"
-                            value="<?= htmlspecialchars($cardV['physical_condition']) ?>">
+                        <select name="physical_condition">
+                            <option value="">Select Condition</option>
+                            <?php foreach ($conditions ?? [] as $condition): ?>
+                                <option value="<?= htmlspecialchars($condition['condition_name']) ?>" <?= $cardV['physical_condition'] === $condition['condition_name'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($condition['condition_name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
 
                     <div class="detail-box">
                         <label>Trading Card Game</label>
 
-                        <input
-                            type="text"
-                            name="tcg_name"
-                            value="<?= htmlspecialchars($cardV['tcg_name']) ?>">
+                        <select name="tcg_name">
+                            <option value="">Select TCG</option>
+                            <?php foreach ($tcgs ?? [] as $tcg): ?>
+                                <option value="<?= htmlspecialchars($tcg['tcg_name']) ?>" <?= $cardV['tcg_name'] === $tcg['tcg_name'] ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($tcg['tcg_name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
 
                     <div class="detail-box">

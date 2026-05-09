@@ -15,7 +15,7 @@ require_once __DIR__ . '/../common/mainHeader.php';
     <div class="profile-card">
 
         <div class="profile-header">
-            <h1><?= htmlspecialchars($profile['username'] ?? 'Employee') ?></h1>
+            <h1><?= htmlspecialchars($profile['name'] ?? 'Employee') ?></h1>
             <span class="role-badge employee">Employee</span>
         </div>
 

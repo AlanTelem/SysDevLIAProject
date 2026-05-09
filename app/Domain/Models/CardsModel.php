@@ -158,6 +158,19 @@ WHERE cc.id = :condition_id;";
         return $this->selectAll($sql);
     }
 
+    public function getAllTcgs(): array
+    {
+        $sql = "
+        SELECT
+            id AS tcg_id,
+            name AS tcg_name
+        FROM trading_card_games
+        ORDER BY name ASC
+    ";
+
+        return $this->selectAll($sql);
+    }
+
     public function getAllCardBlueprints()
     {
         $sql = "
@@ -262,6 +275,32 @@ WHERE cc.id = :condition_id;";
 
     public function updateCard(int $id, array $data): int
     {
+        // Find condition_id from physical_condition
+        $condition = $this->selectOne(
+            "SELECT id FROM card_condition WHERE physical_condition = :physical_condition",
+            [':physical_condition' => $data['physical_condition']]
+        );
+        $condition_id = $condition['id'] ?? null;
+
+        // Find blueprint_id from set_name and tcg_name
+        $blueprint = $this->selectOne(
+            "SELECT cb.id
+             FROM card_blueprints cb
+             JOIN sets s ON cb.set_id = s.id
+             JOIN trading_card_games tcg ON s.tcg_id = tcg.id
+             WHERE s.name = :set_name AND tcg.name = :tcg_name
+             LIMIT 1",
+            [
+                ':set_name' => $data['set_name'],
+                ':tcg_name' => $data['tcg_name']
+            ]
+        );
+        $blueprint_id = $blueprint['id'] ?? null;
+
+        if (!$condition_id || !$blueprint_id) {
+            throw new \Exception('Invalid condition or blueprint');
+        }
+
         return $this->execute(
             "UPDATE cards
          SET blueprint_id = :blueprint_id,
@@ -270,9 +309,9 @@ WHERE cc.id = :condition_id;";
          WHERE id = :id",
             [
                 ':id' => $id,
-                ':blueprint_id' => $data['blueprint_id'],
-                ':condition_id' => $data['condition_id'],
-                ':foil' => $data['foil']
+                ':blueprint_id' => $blueprint_id,
+                ':condition_id' => $condition_id,
+                ':foil' => $data['foil'] === 'Yes' ? 1 : 0
             ]
         );
     }
@@ -307,18 +346,16 @@ WHERE cc.id = :condition_id;";
         SELECT
             c.id AS card_id,
             cb.name AS card_name,
-            s.name AS rarity,
-            tcg.name AS brand,
+            s.name AS set_name,
+            tcg.name AS tcg,
             cc.physical_condition AS condition_name,
             CASE WHEN c.foil = 1 THEN 'Foil' ELSE 'Non-Foil' END AS foil,
-            cf.stock AS value,
             COUNT(c.id) AS quantity
         FROM cards c
         LEFT JOIN card_blueprints cb ON c.blueprint_id = cb.id
         LEFT JOIN sets s ON cb.set_id = s.id
         LEFT JOIN trading_card_games tcg ON s.tcg_id = tcg.id
         LEFT JOIN card_condition cc ON c.condition_id = cc.id
-        LEFT JOIN card_filter cf ON cc.id = cf.condition_id
         WHERE 1=1
     ";
 
@@ -330,16 +367,16 @@ WHERE cc.id = :condition_id;";
             $params[':name'] = $filters['name'];
         }
 
-        // BRAND filter (TCG)
-        if (!empty($filters['brand'])) {
-            $sql .= " AND tcg.name = :brand";
-            $params[':brand'] = $filters['brand'];
+        // TCG filter
+        if (!empty($filters['tcg'])) {
+            $sql .= " AND tcg.name = :tcg";
+            $params[':tcg'] = $filters['tcg'];
         }
 
-        // RARITY filter (set name)
-        if (!empty($filters['rarity'])) {
-            $sql .= " AND s.name = :rarity";
-            $params[':rarity'] = $filters['rarity'];
+        // SET filter
+        if (!empty($filters['set'])) {
+            $sql .= " AND s.name = :set";
+            $params[':set'] = $filters['set'];
         }
 
         // CONDITION filter
@@ -351,19 +388,19 @@ WHERE cc.id = :condition_id;";
         // FOIL filter
         if ($filters['foil'] !== '') {
             $sql .= " AND c.foil = :foil";
-            $params[':foil'] = ($filters['foil'] === 'Foil') ? 1 : 0;
+            $params[':foil'] = ($filters['foil'] === '1') ? 1 : 0;
         }
 
-        // VALUE RANGE filter
-        if (!empty($filters['min_value'])) {
-            $sql .= " AND cf.stock >= :min_value";
-            $params[':min_value'] = $filters['min_value'];
-        }
+        // VALUE RANGE filter - removed since no value column exists
+        // if (!empty($filters['min_value'])) {
+        //     $sql .= " AND cf.stock >= :min_value";
+        //     $params[':min_value'] = $filters['min_value'];
+        // }
 
-        if (!empty($filters['max_value'])) {
-            $sql .= " AND cf.stock <= :max_value";
-            $params[':max_value'] = $filters['max_value'];
-        }
+        // if (!empty($filters['max_value'])) {
+        //     $sql .= " AND cf.stock <= :max_value";
+        //     $params[':max_value'] = $filters['max_value'];
+        // }
 
         // GROUP + ORDER
         $sql .= "
