@@ -1,0 +1,188 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #120d2e;
+    color: white;
+}
+
+/* PAGE */
+.report-page {
+    padding: 35px;
+    margin-left: 120px;
+    margin-top: 50px;
+}
+
+/* HEADER */
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    background: #17113a;
+    padding: 25px 30px;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
+}
+
+.report-header h1 {
+    margin: 0;
+    font-size: 32px;
+    color: white;
+}
+
+/* PRINT BUTTON */
+.print-btn {
+    background: linear-gradient(135deg, #6f56ff, #8c52ff);
+    color: white;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s ease;
+    box-shadow: 0 0 15px rgba(111, 86, 255, 0.35);
+}
+
+.print-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.95;
+}
+
+/* REPORT TABLE CONTAINER */
+.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    border-radius: 18px;
+    background: #17113a;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
+}
+
+/* TABLE HEADER */
+.report-table thead {
+    background: #241b52;
+}
+
+.report-table th {
+    padding: 18px;
+    text-align: left;
+    font-size: 14px;
+    color: #d7d2ff;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* TABLE BODY */
+.report-table td {
+    padding: 18px;
+    font-size: 14px;
+    color: white;
+    background: #1d1545;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ROW HOVER */
+.report-table tbody tr:hover td {
+    background: #2a2061;
+    transition: 0.2s ease;
+}
+
+/* EMPTY STATE */
+.empty-report {
+    margin-top: 20px;
+    background: #17113a;
+    border-radius: 18px;
+    padding: 40px;
+    text-align: center;
+    color: #c7c2ff;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #120d2e;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #3a2f7a;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #5141a3;
+}
+
+/* =========================
+   PRINT STYLING
+========================= */
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+
+    .sidebar,
+    .topbar,
+    .print-btn {
+        display: none !important;
+    }
+
+    .report-page {
+        margin: 0;
+        padding: 0;
+    }
+
+    .report-header {
+        background: white;
+        border: none;
+        box-shadow: none;
+        padding: 0 0 20px 0;
+    }
+
+    .report-header h1 {
+        color: black;
+    }
+
+    .report-table {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+
+    .report-table th {
+        background: #eee !important;
+        color: black;
+    }
+
+    .report-table td {
+        background: white !important;
+        color: black;
+    }
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 900px) {
+    .report-page {
+        margin-left: 0;
+        padding: 20px;
+    }
+
+    .report-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .report-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}

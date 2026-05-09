@@ -57,6 +57,11 @@ use App\Helpers\SessionManager;
             <small class="text-muted">API</small>
         </a>
 
+        <a href="/SysDevLIAProject/reports/inventory" class="sidebar-link">
+            <i class="bi bi-file-earmark-text"></i>
+            Generate Report
+        </a>
+
 
     </div>
 

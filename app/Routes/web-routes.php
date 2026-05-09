@@ -16,6 +16,7 @@ use App\Controllers\DashboardController;
 use App\Middleware\AuthMiddleware;
 use App\Middleware\AdminAuthMiddleware;
 use App\Controllers\ProfileController;
+use App\Controllers\ReportController;
 
 return static function (Slim\App $app): void {
     $container = $app->getContainer();
@@ -135,7 +136,7 @@ return static function (Slim\App $app): void {
     $app->get('/admin/dashboard', [DashboardController::class, 'index'])
         ->setName('admin.dashboard')
         ->add(AdminAuthMiddleware::class);
-
+    $app->get('/reports/inventory', [ReportController::class, 'inventoryReport']);
     // Netflix-style profile selection
     $app->get('/profiles', [ProfileController::class, 'selectProfile'])
         ->setName('profile.select')
