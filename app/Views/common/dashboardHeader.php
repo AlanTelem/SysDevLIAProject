@@ -2,7 +2,7 @@
 
     <!-- LEFT -->
 
-    <img src="/sys-dev-lia/public/assets/images/logo.png"
+    <img src="/SysDevLIAProject/public/assets/images/logo.png"
         alt="Other World Games Logo"
         class="logo">
 
@@ -22,7 +22,7 @@
         <i class="bi bi-sun"></i>
 
 
-        <a class="logout-btn" href="/sys-dev-lia/logout">
+        <a class="logout-btn" href="/SysDevLIAProject/logout">
             Logout
         </a>
     </div>
@@ -49,12 +49,12 @@
 
     <!-- LINKS -->
     <div class="sidebar-links">
-        <a href="/sys-dev-lia/dashboard" class="sidebar-link">
+        <a href="/SysDevLIAProject/dashboard" class="sidebar-link">
             <i class="bi bi-clipboard-data"></i>
             Dashboard
         </a>
 
-        <a href="/sys-dev-lia/cards" class="sidebar-link">
+        <a href="/SysDevLIAProject/cards" class="sidebar-link">
             <i class="bi bi-box-seam"></i>
             Inventory
         </a>

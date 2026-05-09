@@ -6,7 +6,7 @@ use App\Helpers\SessionManager;
 
     <!-- LEFT -->
 
-    <img src="/sys-dev-lia/public/assets/images/logo.png"
+    <img src="/SysDevLIAProject/public/assets/images/logo.png"
         alt="Other World Games Logo"
         class="logo">
 
@@ -15,7 +15,7 @@ use App\Helpers\SessionManager;
     <div class="nav-icons">
 
 
-        <a class="logout-btn" href="/sys-dev-lia/logout">
+        <a class="logout-btn" href="/SysDevLIAProject/logout">
             Logout
         </a>
     </div>
@@ -27,7 +27,7 @@ use App\Helpers\SessionManager;
 
     <!-- PROFILE -->
     <div class="profile-section">
-        <a href="/sys-dev-lia/profile" class="profile-link">
+        <a href="/SysDevLIAProject/profile" class="profile-link">
             <i class="bi bi-person-circle"></i>Profile
         </a>
 
@@ -41,11 +41,11 @@ use App\Helpers\SessionManager;
 
     <!-- LINKS -->
     <div class="sidebar-links">
-        <a href="/sys-dev-lia/dashboard" class="sidebar-link">
+        <a href="/SysDevLIAProject/dashboard" class="sidebar-link">
             <i class="bi bi-clipboard-data"></i>
             Dashboard
         </a>
-        <a href="/sys-dev-lia/cards" class="sidebar-link">
+        <a href="/SysDevLIAProject/cards" class="sidebar-link">
             <i class="bi bi-box-seam"></i>
             Inventory
         </a>
@@ -57,7 +57,7 @@ use App\Helpers\SessionManager;
             <small class="text-muted">API</small>
         </a>
 
-        <a href="/sys-dev-lia/reports/inventory" class="sidebar-link">
+        <a href="/SysDevLIAProject/reports/inventory" class="sidebar-link">
             <i class="bi bi-file-earmark-text"></i>
             Generate Report
         </a>

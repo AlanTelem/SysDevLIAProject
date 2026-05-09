@@ -13,7 +13,7 @@ ViewHelper::loadHeader($title ?? 'Log In');
             <div class="col-md-3 left-panel d-none d-md-block">
                 <!--<h2>OTHER WORLD GAMES</h2>
                 <p>CARDS & GAMES</p> -->
-                <img src="/sys-dev-lia/public/assets/images/logo.png"
+                <img src="/SysDevLIAProject/public/assets/images/logo.png"
                     alt="Other World Games Logo"
                     class="logo">
                 <p><strong>Card inventory made simple.</strong></p>
