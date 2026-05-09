@@ -559,7 +559,7 @@ WHERE cc.id = :condition_id;";
             throw new Exception("Invalid API response.");
         }
 
-        $existingSets = $this->selectAll('SELECT maker_designated_id FROM sets WHERE tcg_id = 7');
+        $existingSets = $this->selectAll('SELECT maker_designated_id FROM sets WHERE tcg_id = 4');
 
         $sql = 'INSERT INTO sets (
                 tcg_id,
@@ -567,7 +567,7 @@ WHERE cc.id = :condition_id;";
                 maker_designated_id
             )
             VALUES (
-                7,
+                4,
                 :name,
                 :maker_designated_id
             )';
