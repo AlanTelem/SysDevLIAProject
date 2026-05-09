@@ -42,29 +42,28 @@ require_once __DIR__ . '/../common/mainHeader.php';
 
                     <!-- TOP ROW -->
                     <div class="employee-top">
+                        <div class="info-box tasks-box">
+                            Name:
 
+                        </div>
                         <div class="info-box name-box">
                             <?= htmlspecialchars($employee['name']) ?>
                         </div>
 
-                        <div class="info-box tasks-box">
-                            Tasks Completed:
-                            <span>12</span>
-                        </div>
+
 
                     </div>
 
                     <!-- BOTTOM ROW -->
                     <div class="employee-bottom">
-
+                        <div class="info-box time-box">
+                            Position:
+                        </div>
                         <div class="info-box role-box">
                             <?= $employee['privilege'] == 1 ? 'Admin' : 'Employee' ?>
                         </div>
 
-                        <div class="info-box time-box">
-                            Work Time:
-                            <span>6h-12h</span>
-                        </div>
+
 
                     </div>
 
