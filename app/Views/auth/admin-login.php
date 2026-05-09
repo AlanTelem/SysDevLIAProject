@@ -11,7 +11,7 @@ ViewHelper::loadHeader($title ?? 'Admin Login');
 
             <!-- LEFT SIDE -->
             <div class="col-md-3 left-panel d-none d-md-block">
-                <img src="/SysDevLIAProject/public/assets/images/logo.png"
+                <img src="/sys-dev-lia/public/assets/images/logo.png"
                     alt="Other World Games Logo"
                     class="logo">
                 <p><strong>Card inventory made simple.</strong></p>

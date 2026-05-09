@@ -17,7 +17,7 @@ $profiles = $data['profiles'] ?? [];
         <div class="row">
             <!-- LEFT SIDE -->
             <div class="col-md-3 left-panel d-none d-md-block">
-                <img src="/SysDevLIAProject/public/assets/images/logo.png"
+                <img src="/sys-dev-lia/public/assets/images/logo.png"
                     alt="Other World Games Logo"
                     class="logo">
                 <p><strong>Select your profile to continue.</strong></p>

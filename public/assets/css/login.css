@@ -1,8 +1,8 @@
 .login-page {
     margin: 0;
     font-family: Arial, sans-serif;
-    background: url("/SysDevLIAProject/public/assets/images/cards-bg.png")
-        no-repeat right center;
+    background: url("/sys-dev-lia/public/assets/images/cards-bg.png") no-repeat
+        right center;
     background-size: 80% 100%;
 }
 
