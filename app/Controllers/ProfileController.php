@@ -43,7 +43,10 @@ class ProfileController extends BaseController
         }
 
         $data = $this->profileModel->getProfile($profile['id']);
-        $data['position'] = 'Employee Position';   // ADD THIS
+        //$data['position'] = 'Employee Position';   // ADD THIS
+        $data['position'] = ($data['privilege'] == 1)
+            ? 'Administrator Position'
+            : 'Employee Position';
 
         // Employee sees ONLY their own operations
         $allOps = $_SESSION['inventory_operations'] ?? [];
@@ -81,8 +84,10 @@ class ProfileController extends BaseController
         }
 
         $data = $this->profileModel->getProfile($profile['id']);
-        $data['position'] = 'Admin Position';   // ADD THIS
-
+        //$data['position'] = 'Admin Position';   // ADD THIS
+        $data['position'] = ($data['privilege'] == 1)
+            ? 'Administrator Position'
+            : 'Employee Position';
         // Admin sees ALL operations
         $allOps = $_SESSION['inventory_operations'] ?? [];
         $operations = $this->formatOperations($allOps);   // ADD THIS
@@ -145,7 +150,7 @@ class ProfileController extends BaseController
         ]);
 
         // Redirect based on role
-        if ($data['privilege'] === 'admin') {
+        if ($data['privilege'] === '1') {
             return $response
                 ->withHeader('Location', APP_BASE_URL . '/dashboard')
                 ->withStatus(302);

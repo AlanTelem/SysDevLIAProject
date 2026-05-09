@@ -1,3 +1,7 @@
+<?php
+
+use App\Helpers\SessionManager;
+?>
 <div class="top-navbar">
 
     <!-- LEFT -->
@@ -23,17 +27,16 @@
 
     <!-- PROFILE -->
     <div class="profile-section">
-        <i class="bi bi-person-circle"></i>
+        <a href="/SysDevLIAProject/profile" class="profile-link">
+            <i class="bi bi-person-circle"></i>Profile
+        </a>
 
         <div class="profile-name">
-            Username<br>
-            Employee
+            <?= SessionManager::get('profile')['name'] ?><br>
+            <small class="text-muted">
+                <?= (SessionManager::get('profile')['privilege'] == 1) ? 'Admin' : 'Employee' ?>
+            </small>
         </div>
-    </div>
-
-    <!-- MENU ICON -->
-    <div class="menu-icon">
-        <i class="bi bi-list"></i>
     </div>
 
     <!-- LINKS -->
@@ -53,6 +56,7 @@
             <br>
             <small class="text-muted">API</small>
         </a>
+
 
     </div>
 
