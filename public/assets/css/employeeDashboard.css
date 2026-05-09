@@ -31,6 +31,11 @@ body {
     margin-bottom: 25px;
 }
 
+.top-buttons {
+    display: flex;
+    gap: 15px; /* space between the two buttons */
+}
+
 .welcome-text h1 {
     margin: 0;
     color: #d4b228;
@@ -157,6 +162,24 @@ body {
 
 .card-actions a:hover {
     opacity: 0.7;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #120d2e;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #3a2f7a;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #5141a3;
 }
 
 /* RESPONSIVE */
