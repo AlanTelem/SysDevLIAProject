@@ -49,6 +49,12 @@ return static function (Slim\App $app): void {
         return $response;
     });
 
+    $app->get('/apiTest', [HomeController::class, 'apiTest'])
+    ->setName('home.api');
+
+    $app->get('/importMtgSets', [HomeController::class, 'setImport'])
+    ->setName('home.setImport');
+
     // A route to test runtime error handling and custom exceptions.
     $app->get('/error', function (Request $request, Response $response, $args) {
         throw new \Slim\Exception\HttpBadRequestException($request, "This is a runtime error. Something went wrong");

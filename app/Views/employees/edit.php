@@ -38,7 +38,7 @@ require_once __DIR__ . '/../common/mainHeader.php';
             <h1>MODIFY USER</h1>
 
             <form method="POST"
-                action="/admin/employees/<?= $employee['profile_id'] ?>/update">
+                action="<?= APP_BASE_URL ?>/admin/employees/<?= $employee['profile_id'] ?>/update">
 
                 <!-- ACCOUNT ID -->
                 <input type="hidden"

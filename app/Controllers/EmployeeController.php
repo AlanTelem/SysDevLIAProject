@@ -43,7 +43,7 @@ class EmployeeController extends BaseController
         $this->employeeModel->createEmployee($email, $password, $name, $privilege);
 
         FlashMessage::success('Employee created successfully');
-        return $this->redirect($request, $response, 'employees.index');
+        return $this->redirect($request, $response, 'admin.employees');
     }
 
     public function edit(Request $request, Response $response, array $args): Response
@@ -65,7 +65,7 @@ class EmployeeController extends BaseController
         $this->employeeModel->updateEmployee($id, $data);
 
         FlashMessage::success('Employee updated successfully');
-        return $this->redirect($request, $response, 'employees.index');
+        return $this->redirect($request, $response, 'admin.employees');
     }
 
     public function delete(Request $request, Response $response, array $args): Response
@@ -75,6 +75,6 @@ class EmployeeController extends BaseController
         $this->employeeModel->deleteEmployee($id);
 
         FlashMessage::success('Employee deleted successfully');
-        return $this->redirect($request, $response, 'employees.index');
+        return $this->redirect($request, $response, 'admin.employees');
     }
 }

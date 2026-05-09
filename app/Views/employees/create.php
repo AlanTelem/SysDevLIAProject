@@ -32,7 +32,7 @@ require_once __DIR__ . '/../common/mainHeader.php';
             <h1>CREATE ACCOUNT</h1>
 
             <form method="POST"
-                action="<?= APP_BASE_URL ?>/admin/employees/store">
+                action="<?= APP_BASE_URL ?>/admin/employees/create">
 
                 <!-- NAME -->
                 <div class="form-group">

@@ -1,5 +1,7 @@
 env.php
 config/env.php
+data/mtg.json
+data/mtgsets.json
 # Documentation files to exclude from version control
 # docs/Custom_404_page_implementation.md
 
