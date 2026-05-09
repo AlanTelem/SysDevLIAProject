@@ -48,18 +48,24 @@ class TCGApiService extends BaseService
     public function fetchOnePieceSetJson():string|false
     {
         $url = "https://www.optcgapi.com/api/allSets/";
-
-        $json = file_get_contents($url);
-
-        return $json;
+        return file_get_contents($url);
     }
 
     public function fetchOnePieceCardsJson():string|false
     {
         $url = "https://www.optcgapi.com/api/allSetCards/";
+        return file_get_contents($url);
+    }
 
-        $json = file_get_contents($url);
+    public function fetchYugiohSetsJson():string|false
+    {
+        $endpoint = 'https://db.ygoprodeck.com/api/v7/cardsets.php';
+        return file_get_contents($endpoint);
+    }
 
-        return $json;
+    public function fetchYugiohCardsJson():string|false
+    {
+        $endpoint = 'https://db.ygoprodeck.com/api/v7/cardinfo.php';
+        return file_get_contents($endpoint);
     }
 }

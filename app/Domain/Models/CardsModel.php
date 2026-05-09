@@ -150,6 +150,7 @@ WHERE cc.id = :condition_id;";
     public function getAllSets()
     {
         $this->getOnePieceSets();
+        $this->getYugiohSets();
         $sql = "
         SELECT
             s.id AS set_id,
@@ -547,7 +548,7 @@ WHERE cc.id = :condition_id;";
         $this->commit();
     }
 
-    public function getOnePieceSets():int
+    public function getOnePieceSets(): int
     {
         $json = $this->tcgapiService->fetchOnePieceSetJson();
         if (!$json) {
@@ -578,7 +579,7 @@ WHERE cc.id = :condition_id;";
             if (in_array($set['set_id'], $existingSets)) {
                 continue;
             }
-            $count+= $this->execute($sql, [
+            $count += $this->execute($sql, [
                 'name' => $set['set_name'],
                 'maker_designated_id' => $set['set_id']
             ]);
@@ -586,7 +587,8 @@ WHERE cc.id = :condition_id;";
         return $count;
     }
 
-    public function populateOnePieceBluePrints():int{
+    public function populateOnePieceBluePrints(): int
+    {
         $json = $this->tcgapiService->fetchOnePieceCardsJson();
         if (!$json) {
             throw new Exception('Failed to get data from api.');
@@ -601,7 +603,8 @@ WHERE cc.id = :condition_id;";
             'SELECT maker_id
             FROM card_blueprints
             LEFT JOIN sets ON card_blueprints.set_id = sets.id
-            WHERE sets.tcg_id = 7');
+            WHERE sets.tcg_id = 7'
+        );
 
         $existingSets = $this->selectAll('SELECT id, maker_designated_id FROM sets WHERE tcg_id = 7');
         $setLookup = [];
@@ -625,18 +628,18 @@ WHERE cc.id = :condition_id;";
             )';
 
         $count = 0;
-        $commitCounter=0;
+        $commitCounter = 0;
         $this->beginTransaction();
         foreach ($cards as $card) {
             if (in_array($card['card_set_id'], $existingCards)) {
                 continue;
             }
-            $count+= $this->execute($sql, [
-                'maker_id'=>$card['card_set_id'],
-                'set_id'=>$setLookup[$card['set_id']],
-                'name'=>$card['card_name'],
-                'thumbnail_url'=>$card['card_image'] ?? null,
-                'large_art_url'=>$card['card_image'] ?? null,
+            $count += $this->execute($sql, [
+                'maker_id' => $card['card_set_id'],
+                'set_id' => $setLookup[$card['set_id']],
+                'name' => $card['card_name'],
+                'thumbnail_url' => $card['card_image'] ?? null,
+                'large_art_url' => $card['card_image'] ?? null,
             ]);
             $commitCounter++;
             if ($count % 1000 === 0) {
@@ -646,5 +649,132 @@ WHERE cc.id = :condition_id;";
         }
         $this->commit();
         return $count;
+    }
+
+    public function getYugiohSets(): int
+    {
+        $json = $this->tcgapiService->fetchYugiohSetsJson();
+        if (!$json) {
+            throw new Exception('Failed to get data from api.');
+        }
+        $sets = json_decode($json, true);
+
+        if (!is_array($sets)) {
+            throw new Exception("Invalid API response.");
+        }
+
+        $existingSets = $this->selectAll('SELECT maker_designated_id FROM sets WHERE tcg_id = 3');
+
+        $sql = 'INSERT INTO sets (
+                tcg_id,
+                name,
+                maker_designated_id,
+                release_date
+            )
+            VALUES (
+                3,
+                :name,
+                :maker_designated_id,
+                :release_date
+            )';
+
+        $count = 0;
+
+        foreach ($sets as $set) {
+            if (in_array($set['set_code'], $existingSets)) {
+                continue;
+            }
+            $count += $this->execute($sql, [
+                'name' => $set['set_name'],
+                'maker_designated_id' => $set['set_code'],
+                'release_date' => $set['tcg_date'] ?? null
+            ]);
+        }
+        return $count;
+    }
+
+    public function populateYugiohBluePrints(): int
+    {
+        $json = $this->tcgapiService->fetchYugiohCardsJson();
+        if (!$json) {
+            throw new Exception('Failed to get data from api.');
+        }
+        $cardsDataObject = json_decode($json, true);
+        $cards = $cardsDataObject['data'];
+        if (!is_array($cards)) {
+            throw new Exception("Invalid API response.");
+        }
+
+        $existingCards = $this->selectAll(
+            'SELECT maker_id
+            FROM card_blueprints
+            LEFT JOIN sets ON card_blueprints.set_id = sets.id
+            WHERE sets.tcg_id = 3'
+        );
+
+        $existingLookup = [];
+
+        foreach ($existingCards as $existingCard) {
+            $existingLookup[$existingCard['maker_id']] = true;
+        }
+
+        $sql = 'INSERT INTO card_blueprints (
+                maker_id,
+                set_id,
+                name,
+                thumbnail_url,
+                large_art_url
+            )
+            VALUES (
+                :maker_id,
+                :set_id,
+                :name,
+                :thumbnail_url,
+                :large_art_url
+            )';
+
+        $count = 0;
+        $commitCounter = 0;
+        $this->beginTransaction();
+        foreach ($cards as $card) {
+            if (empty($card['card_sets'])) {
+                continue;
+            }
+            $thumbnail = $card['card_images'][0]['image_url_small'] ?? null;
+            $image = $card['card_images'][0]['image_url'] ?? null;
+            foreach ($card['card_sets'] as $cardSet) {
+                $setCode = preg_replace('/-\d+$/', '', $cardSet['set_code']);
+
+                if (!isset($setLookup[$setCode])) {
+                    continue;
+                }
+
+                $key = $card['id'] . '|' . $setCode;
+
+                if (isset($existingLookup[$key])) {
+                    continue;
+                }
+
+
+
+                $count += $this->execute($sql, [
+                    'maker_id' => $card['id'],
+                    'set_id' => $setLookup[$setCode],
+                    'name' => $card['name'],
+                    'thumbnail_url' => $thumbnail,
+                    'large_art_url' => $image,
+                ]);
+
+                $existingLookup[$key] = true;
+
+                $commitCounter++;
+
+                if ($commitCounter % 1000 === 0) {
+                    $this->commit();
+                    $this->beginTransaction();
+                }
+            }
+        }
+        $this->commit();
     }
 }
