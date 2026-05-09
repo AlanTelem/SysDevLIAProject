@@ -28,6 +28,8 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 25px;
+    padding-left: 25px;
+    padding-right: 10px;
 }
 
 .employee-header h1 {
@@ -61,6 +63,7 @@ body {
     align-items: center;
     justify-content: space-between;
     margin-bottom: 22px;
+    margin-left: 25px;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
 }
 
@@ -149,4 +152,22 @@ body {
 .delete-btn:hover {
     background-color: #d4c247;
     color: black;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #120d2e;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #3a2f7a;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #5141a3;
 }

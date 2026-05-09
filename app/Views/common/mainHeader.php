@@ -2,6 +2,31 @@
 
 use App\Helpers\SessionManager;
 ?>
+<style>
+    .sidebar {
+        overflow-y: auto;
+        /* enables scrolling */
+    }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar {
+        width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #120d2e;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #3a2f7a;
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #5141a3;
+    }
+</style>
+
 <div class="top-navbar">
 
     <!-- LEFT -->

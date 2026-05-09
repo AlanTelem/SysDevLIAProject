@@ -22,16 +22,19 @@ require_once __DIR__ . '/../common/mainHeader.php';
         <div class="welcome-text">
             <h1>Welcome Back !</h1>
         </div>
-        <a href="<?= APP_BASE_URL ?>/employees" class="import-btn">
-            <i class="bi bi-list-stars"></i>
-            Employee List
-        </a>
-        <a href="<?= APP_BASE_URL ?>/inventory/import" class="import-btn">
-            ⬇ Import Inventory
-        </a>
-        
+
+        <div class="top-buttons">
+            <a href="<?= APP_BASE_URL ?>/employees" class="import-btn">
+                <i class="bi bi-list-stars"></i> Employee List
+            </a>
+
+            <a href="<?= APP_BASE_URL ?>/inventory/import" class="import-btn">
+                <i class="bi bi-arrow-down"></i> Import Inventory
+            </a>
+        </div>
 
     </div>
+
 
     <!-- STATS -->
     <div class="stats-container">
@@ -82,11 +85,11 @@ require_once __DIR__ . '/../common/mainHeader.php';
                         <div class="card-actions" onclick="event.stopPropagation()">
 
                             <a href="<?= APP_BASE_URL ?>/cards/edit/<?= $card['card_id'] ?>">
-                                ✏
+                                <i class="bi bi-pencil-square"></i>
                             </a>
 
                             <a href="<?= APP_BASE_URL ?>/cards/delete/<?= $card['card_id'] ?>">
-                                🗑
+                                <i class="bi bi-trash"></i>
                             </a>
 
                         </div>

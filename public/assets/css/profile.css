@@ -209,3 +209,21 @@ body {
         align-items: flex-start;
     }
 }
+
+/* SCROLLBAR */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #120d2e;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #3a2f7a;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #5141a3;
+}

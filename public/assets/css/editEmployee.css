@@ -193,3 +193,21 @@ body {
 .modify-btn:hover {
     opacity: 0.9;
 }
+
+/* SCROLLBAR */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #120d2e;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #3a2f7a;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #5141a3;
+}
